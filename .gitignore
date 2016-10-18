@@ -1,2 +1,10 @@
 typings
 node_modules
+/app/*.map
+*.map
+/app/app.component.js
+/app/app.component.js.map
+/app/app.module.js
+/app/app.module.js.map
+/app/app.routing.js
+/app/app.routing.js.map
