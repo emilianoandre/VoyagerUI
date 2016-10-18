@@ -4,9 +4,12 @@
  */
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
- 
+
 @Injectable()
 export class UserService {
+    
+    public static SERVICE_LOGIN = "Login/";
+    
     constructor(private http: Http) { }
  
     getAll() {
