@@ -26,7 +26,7 @@ export class AuthenticationService {
         return this.http.post(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_LOGIN + this.METHOD_LOGIN, JSON.stringify({ userName: userName, password: password }), options)
             .map((response: Response) => {
                 // login successful if there's a jwt token in the response
-                let user = JSON.parse(response._body);
+                let user = response.json();
                 if (user && user.token) {
                     // store user details and jwt token in local storage to keep user logged in between page refreshes
                     localStorage.setItem('currentUser', JSON.stringify(user));

@@ -15,6 +15,9 @@ import { UserService } from '../shared/services/user.service';
 export class HomeComponent implements OnInit {
     currentUser: User;
     users: User[] = [];
+    
+    cars: any[];
+    cols: any[];
  
     constructor(private userService: UserService) {
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -22,6 +25,20 @@ export class HomeComponent implements OnInit {
  
     ngOnInit() {
         this.loadAllUsers();
+        this.cars = [];
+        for (let i=0; i<25; i++) {
+            this.cars.push({ 'vin':'something', 
+                    'year':'somethingelse', 
+                    'brand': 'test',
+                    'color': 'red'
+                  });
+        }
+        this.cols = [
+            {field: 'vin', header: 'Vin'},
+            {field: 'year', header: 'Year'},
+            {field: 'brand', header: 'Brand'},
+            {field: 'color', header: 'Color'}
+        ];
     }
  
     deleteUser(id) {
