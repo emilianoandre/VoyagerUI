@@ -26,7 +26,7 @@
             'rxjs': 'npm:rxjs',
             'angular2-in-memory-web-api': 'npm:angular2-in-memory-web-api',
             '@ng-bootstrap/ng-bootstrap': 'node_modules/@ng-bootstrap/ng-bootstrap/bundles/ng-bootstrap.js',
-            'primeng': 'node_modules/primeng',
+            'primeng': 'node_modules/primeng'
         },
         // packages tells the System loader how to load when no filename and/or no extension
         packages: {

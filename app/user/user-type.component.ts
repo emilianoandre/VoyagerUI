@@ -5,84 +5,95 @@
  */
 import { Component, OnInit } from '@angular/core';
 
+//Services
+import { TypeService } from '../shared/services/type.service';
+import { AlertService } from '../shared/services/alert.service';
+
 @Component({
-    moduleId: module.id,
-    selector    : 'user-type-list',
-    templateUrl: 'user-type.component.html'
+    moduleId : module.id,
+    selector : 'user-type-list',
+    templateUrl : 'user-type.component.html'
 })
 
 export class UserTypeComponent implements OnInit {
     
-    displayDialog: boolean;
-    car:any = new PrimeCar();    
-    selectedCar: any;    
-    newCar: boolean;
-    cars: any[];
-    cols: any[];
+    displayDialog : boolean;
+    userType:any = new PrimeUserType();
+    selectedUserType : any;
+    newUserType : boolean;
+    userTypes;
+    cols : any[];    
+    loading = false;
 
-    constructor() { }
+    constructor(private typeService: TypeService, 
+            private alertService: AlertService) { }
 
     ngOnInit() {
-        this.cars = [];
-        for (let i=0; i<25; i++) {
-            this.cars.push({ 'vin':'something' + i, 
-                    'year':'somethingelse', 
-                    'brand': 'test',
-                    'color': 'red'
-                  });
-        }
+        // Start the loading widget
+        this.loading = true;
+        
+        this.typeService.getUserTypes()
+        .subscribe(
+            data => {
+                this.userTypes = data;
+                // Stop the loading widget
+                this.loading = false;
+            },
+            error => {
+                this.alertService.error('Failed to load the User Types. ' + error);
+                // Stop the loading widget
+                this.loading = false;
+            });
         
         this.cols = [
-                     {field: 'vin', header: 'Vin'},
-                     {field: 'year', header: 'Year'},
-                     {field: 'brand', header: 'Brand'},
-                     {field: 'color', header: 'Color'}
+                     {field: 'idUserType', header: 'ID'},
+                     {field: 'name', header: 'Name'}
                  ];
     }
     
     showDialogToAdd() {
-        this.newCar = true;
-        this.car = new PrimeCar();
+        this.newUserType = true;
+        this.userType = new PrimeUserType();
         this.displayDialog = true;
     }
     
     save() {
-        if (this.newCar) {
-            this.cars.push(this.car);
+        if (this.newUserType) {
+            this.userTypes.push(this.userType);
         } else {
-            this.cars[this.findSelectedCarIndex()] = this.car;
+            this.userTypes[this.findSelectedUserTypeIndex()] = this.userType;
         }
         
-        this.car = null;
+        this.userType = null;
         this.displayDialog = false;
     }
     
     delete() {
-        this.cars.splice(this.findSelectedCarIndex(), 1);
-        this.car = null;
+        this.userTypes.splice(this.findSelectedUserTypeIndex(), 1);
+        this.userType = null;
         this.displayDialog = false;
     }    
     
     onRowSelect(event) {
-        this.newCar = false;
-        this.car = this.cloneCar(event.data);
+        this.newUserType = false;
+        this.userType = this.cloneUserType(event.data);
         this.displayDialog = true;
     }
     
-    cloneCar(c: PrimeCar): PrimeCar {
-        let car = new PrimeCar();
+    cloneUserType(c: PrimeUserType): PrimeUserType {
+        let userType = new PrimeUserType();
         for(let prop in c) {
-            car[prop] = c[prop];
+            userType[prop] = c[prop];
         }
-        return car;
+        return userType;
     }
     
-    findSelectedCarIndex(): number {
-        return this.cars.indexOf(this.selectedCar);
+    findSelectedUserTypeIndex(): number {
+        return this.userTypes.indexOf(this.selectedUserType);
     }
 }
 
-class PrimeCar {
+class PrimeUserType {
     
-    constructor(public vin?, public year?, public brand?, public color?) {}
+    constructor(public idUserTypeidUserType?, public name?) {}
 }
