@@ -5,9 +5,12 @@
  */
 import { Component, OnInit } from '@angular/core';
 
-//Services
-import { TypeService } from '../shared/services/type.service';
+// Services
+import { UserTypeService } from '../shared/services/user-type.service';
 import { AlertService } from '../shared/services/alert.service';
+
+// Models
+import { UserType } from './user-type'
 
 @Component({
     moduleId : module.id,
@@ -18,24 +21,32 @@ import { AlertService } from '../shared/services/alert.service';
 export class UserTypeComponent implements OnInit {
     
     displayDialog : boolean;
-    userType:any = new PrimeUserType();
-    selectedUserType : any;
+    userType:UserType = new UserType();
+    selectedUserType : UserType;
     newUserType : boolean;
     userTypes;
-    cols : any[];    
+    
+    // Columns to be displayed in the table
+    cols : any[];
+    
+    // Loading widget display
     loading = false;
 
-    constructor(private typeService: TypeService, 
+    constructor(private userTypeService: UserTypeService, 
             private alertService: AlertService) { }
 
     ngOnInit() {
         // Start the loading widget
         this.loading = true;
         
-        this.typeService.getUserTypes()
+        this.userTypeService.getUserTypes()
         .subscribe(
             data => {
-                this.userTypes = data;
+                if (data.error) {
+                    this.alertService.error(data.error);
+                } else {            
+                    this.userTypes = data;
+                }
                 // Stop the loading widget
                 this.loading = false;
             },
@@ -51,49 +62,124 @@ export class UserTypeComponent implements OnInit {
                  ];
     }
     
-    showDialogToAdd() {
-        this.newUserType = true;
-        this.userType = new PrimeUserType();
-        this.displayDialog = true;
-    }
-    
-    save() {
-        if (this.newUserType) {
-            this.userTypes.push(this.userType);
-        } else {
-            this.userTypes[this.findSelectedUserTypeIndex()] = this.userType;
+    /**
+     *  Display Add/Edit Dialog
+     *  @param create: boolean to know if we should display add or edit dialog
+     *  @param selectedUserType: selected user type
+     */
+    showDialog(create:boolean, selectedUserType:UserType) {
+        
+        // Clear Alerts
+        this.alertService.clearAlert();
+        
+        // Check if a row was selected on edit
+        if (!create && !selectedUserType) {
+            this.alertService.error('Please select a row');
+            return;
         }
         
-        this.userType = null;
-        this.displayDialog = false;
-    }
-    
-    delete() {
-        this.userTypes.splice(this.findSelectedUserTypeIndex(), 1);
-        this.userType = null;
-        this.displayDialog = false;
-    }    
-    
-    onRowSelect(event) {
-        this.newUserType = false;
-        this.userType = this.cloneUserType(event.data);
+        this.newUserType = create;
+        if (create) {
+            this.userType = new UserType();
+            this.displayDialog = true;
+        } else {
+            let updatedUserType = new UserType();
+            updatedUserType.idUserType = selectedUserType.idUserType;
+            updatedUserType.name = selectedUserType.name;
+        
+            this.userType = selectedUserType;
+        }
         this.displayDialog = true;
     }
     
-    cloneUserType(c: PrimeUserType): PrimeUserType {
-        let userType = new PrimeUserType();
-        for(let prop in c) {
-            userType[prop] = c[prop];
+    /**
+     * Saves a new or old user Type
+     */
+    save() {
+        // Start the loading widget
+        this.loading = true;
+        
+        // Check if it's a new user type
+        if (this.newUserType) {
+            this.userTypeService.createUserType(this.userType.name)
+            .subscribe(
+                data => {
+                    if (data.error) {
+                        this.alertService.error(data.error);
+                    } else {
+                        this.userTypes.push(data);
+                    }
+                },
+                error => {
+                    this.alertService.error('Failed to create User Type. ' + error);
+                },
+                () => {
+                    this.userType = null;
+                    // Stop the loading widget
+                    this.loading = false;
+                });
+        } else {
+            this.userTypeService.updateUserType(this.userType)
+            .subscribe(
+                data => {
+                    if (data.error) {
+                        this.alertService.error(data.error);
+                    } else {                
+                        this.userTypes[this.findSelectedUserTypeIndex()] = this.userType;
+                    }
+                },
+                error => {
+                    this.alertService.error('Failed to update User Type. ' + error);                   
+                },
+                () => {
+                    this.userType = null;
+                    // Stop the loading widget
+                    this.loading = false;
+                });
         }
-        return userType;
+        
+        // Close the dialog
+        this.displayDialog = false;
     }
     
+    /**
+     * Deletes a user type
+     * @param selectedUserType: selected user type
+     */
+    deleteUserType(selectedUserType:UserType) {
+        // Clear Alerts
+        this.alertService.clearAlert();
+        if (!selectedUserType) {
+            this.alertService.error('Please select a row');
+            return;
+        }
+        
+        // Start the loading widget
+        this.loading = false;
+        
+        this.userTypeService.deleteUserType(this.selectedUserType.idUserType)
+        .subscribe(
+            data => {
+                if (data && data.error) {
+                    this.alertService.error(data.error);
+                } else {            
+                    this.userTypes.splice(this.findSelectedUserTypeIndex(), 1);
+                }
+            },
+            error => {
+                this.alertService.error('Failed to delete User Type. ' + error);                   
+            },
+            () => {
+                this.userType = null;
+                // Stop the loading widget
+                this.loading = false;
+            });
+    }
+    
+    /**
+     * Returns the selected user type by index
+     */
     findSelectedUserTypeIndex(): number {
         return this.userTypes.indexOf(this.selectedUserType);
     }
-}
-
-class PrimeUserType {
-    
-    constructor(public idUserTypeidUserType?, public name?) {}
 }

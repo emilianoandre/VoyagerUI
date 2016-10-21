@@ -33,6 +33,6 @@ export class UserService {
     }
  
     delete(id) {
-        return this.http.delete('/api/users/' + id, Utils.getJwt()).map((response: Response) => response.json());
+        return this.http.put('/api/users/' + id, Utils.getJwt()).map((response: Response) => response.json());
     }
 }

@@ -33,10 +33,31 @@ export class Utils {
     }
     
     /**
+     * Handles responses in an HTTP calls
+     */
+    static handleServerResponse(response: Response) {
+        // Check if we received a response
+        if(response && response.status) {
+            if (response.json().status == 200) {
+                return response.json().body;
+            } else if (response.json().errors) {                
+                let errorList = "";
+                // Get all errors
+                for (var i = 0; i < response.json().errors.length; i++) {
+                    errorList += response.json().errors[i];
+                }
+                
+                return Observable.throw(errorList);
+            }
+        }
+        return Observable.throw(response || 'Error contacting the server');
+    }
+    
+    /**
      * Handles an error in an HTTP call
      */
-    static handleServerError(err: Response) {
-        // If we received a response display the status code
+    static handleServerErrors(err: Response) {
+        // Check if we received a response
         if(err instanceof Response) {
           return Observable.throw('Error when contacting the server. Error status: ' + err.status);
         }

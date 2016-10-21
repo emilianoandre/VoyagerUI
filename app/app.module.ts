@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }    from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { DataTableModule, SharedModule, DialogModule } from 'primeng/primeng';
+import { DataTableModule, SharedModule, DialogModule, ButtonModule } from 'primeng/primeng';
 
 // Used to create fake backend
 import { fakeBackendProvider } from './shared/helpers/fake-backend';
@@ -23,7 +23,7 @@ import { routing } from './routing/app.routing';
 import { AuthGuard } from './shared/auth/auth.guard';
 
 // Services
-import { AlertService, AuthenticationService, UserService, TypeService } from './shared/services/index';
+import { AlertService, AuthenticationService, UserService, UserTypeService } from './shared/services/index';
  
 @NgModule({
     imports: [
@@ -33,6 +33,7 @@ import { AlertService, AuthenticationService, UserService, TypeService } from '.
         routing,
         DataTableModule,
         DialogModule,
+        ButtonModule,
         NgbModule.forRoot(),
     ],
     declarations: [
@@ -48,7 +49,7 @@ import { AlertService, AuthenticationService, UserService, TypeService } from '.
         AlertService,
         AuthenticationService,
         UserService,
-        TypeService
+        UserTypeService
  
         // providers used to create fake backend
         //fakeBackendProvider,

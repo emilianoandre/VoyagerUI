@@ -26,15 +26,33 @@ export class AlertService {
             }
         });
     }
- 
+    
+    /**
+     * Displays an success in the current view
+     * @param message: message to display
+     * @param keepAfterNavigationChange: determines if the alert will be kept after changing page
+     */
     success(message: string, keepAfterNavigationChange = false) {
         this.keepAfterNavigationChange = keepAfterNavigationChange;
         this.subject.next({ type: 'success', text: message });
     }
  
+    /**
+     * Displays an error in the current view
+     * @param message: message to display
+     * @param keepAfterNavigationChange: determines if the alert will be kept after changing page
+     */
     error(message: string, keepAfterNavigationChange = false) {
         this.keepAfterNavigationChange = keepAfterNavigationChange;
         this.subject.next({ type: 'error', text: message });
+    }
+    
+    /**
+     * Clears the current alert in the view
+     */
+    clearAlert() {
+        this.keepAfterNavigationChange = false;
+        this.subject.next();
     }
  
     getMessage(): Observable<any> {
