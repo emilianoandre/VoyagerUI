@@ -82,12 +82,8 @@ export class UserTypeComponent implements OnInit {
         if (create) {
             this.userType = new UserType();
             this.displayDialog = true;
-        } else {
-            let updatedUserType = new UserType();
-            updatedUserType.idUserType = selectedUserType.idUserType;
-            updatedUserType.name = selectedUserType.name;
-        
-            this.userType = selectedUserType;
+        } else {        
+            this.userType = this.cloneUserType(selectedUserType);
         }
         this.displayDialog = true;
     }
@@ -181,5 +177,25 @@ export class UserTypeComponent implements OnInit {
      */
     findSelectedUserTypeIndex(): number {
         return this.userTypes.indexOf(this.selectedUserType);
+    }
+    
+    /**
+     * Closes the Add/Edit dialog
+     */
+    closeDialog() {
+     // Close the dialog
+        this.displayDialog = false;
+    }
+    
+    /**
+     * Clones a user type
+     * @param userType user type to clone
+     */
+    cloneUserType(userType: UserType): UserType {
+        let userTypeToUpdate = new UserType();
+        for(let prop in userType) {
+            userTypeToUpdate[prop] = userType[prop];
+        }
+        return userTypeToUpdate;
     }
 }
