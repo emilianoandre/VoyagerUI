@@ -1,9 +1,9 @@
 import { NgModule }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule }    from '@angular/forms';
+import { FormsModule, ReactiveFormsModule }    from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { DataTableModule, SharedModule, DialogModule, ButtonModule } from 'primeng/primeng';
+import { DataTableModule, SharedModule, DialogModule, ButtonModule, PanelModule } from 'primeng/primeng';
 
 // Used to create fake backend
 import { fakeBackendProvider } from './shared/helpers/fake-backend';
@@ -29,11 +29,13 @@ import { AlertService, AuthenticationService, UserService, UserTypeService } fro
     imports: [
         BrowserModule,
         FormsModule,
+        ReactiveFormsModule,
         HttpModule,
         routing,
         DataTableModule,
         DialogModule,
         ButtonModule,
+        PanelModule,
         NgbModule.forRoot(),
     ],
     declarations: [

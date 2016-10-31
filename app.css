@@ -266,3 +266,14 @@ body {
 	margin:0;
 	padding:0;
 }
+
+/* For the popups */
+
+.type-popup {
+	width: 400px;
+}
+
+.ui-dialog {
+	display: inline-table;
+	width: auto;
+}

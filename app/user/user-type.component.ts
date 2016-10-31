@@ -4,6 +4,8 @@
  * 
  */
 import { Component, OnInit } from '@angular/core';
+import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { Message, SelectItem } from 'primeng/primeng';
 
 // Services
 import { UserTypeService } from '../shared/services/user-type.service';
@@ -25,6 +27,9 @@ export class UserTypeComponent implements OnInit {
     selectedUserType : UserType;
     newUserType : boolean;
     userTypes;
+    msgs: Message[] = [];
+    userTypeform: FormGroup;    
+    submitted: boolean;
     
     // Columns to be displayed in the table
     cols : any[];
@@ -33,11 +38,18 @@ export class UserTypeComponent implements OnInit {
     loading = false;
 
     constructor(private userTypeService: UserTypeService, 
-            private alertService: AlertService) { }
+            private alertService: AlertService,
+            private fb: FormBuilder) { }
 
     ngOnInit() {
         // Start the loading widget
         this.loading = true;
+        
+        // Set up validations
+        this.userTypeform = this.fb.group({
+            'userTypeId': new FormControl('', Validators.required),
+            'userTypeName': new FormControl('', Validators.required)
+        });
         
         this.userTypeService.getUserTypes()
         .subscribe(
@@ -61,6 +73,21 @@ export class UserTypeComponent implements OnInit {
                      {field: 'name', header: 'Name'}
                  ];
     }
+    
+    /**
+     * Code to be executed when submitting the form
+     * 
+     */
+    onSubmit(value: string) {
+        this.submitted = true;
+        this.msgs = [];
+        this.msgs.push({severity:'info', summary:'Success', detail:'Form Submitted'});
+    }
+    
+    /**
+     * Get the message from the Add/Edit form
+     */
+    get diagnostic() { return JSON.stringify(this.userTypeform.value); }
     
     /**
      *  Display Add/Edit Dialog

@@ -21,21 +21,33 @@
 	</p-dataTable>
 	
 	<p-dialog header="User Type Details" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true">
-	    <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="userType">
-	        <div class="ui-grid-row">
-	            <div class="ui-grid-col-4"><label for="vin">ID</label></div>
-	            <div class="ui-grid-col-8"><input pInputText id="userTypeId" [(ngModel)]="userType.idUserType" disabled/></div>
-	        </div>
-	        <div class="ui-grid-row">
-	            <div class="ui-grid-col-4"><label for="brand">Name</label></div>
-	            <div class="ui-grid-col-8"><input pInputText id="name" [(ngModel)]="userType.name" /></div>
-	        </div>
-	    </div>
-	    <footer>
-	        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-	            <button type="button" pButton icon="fa-close" (click)="closeDialog()" label="Cancel"></button>
-	            <button type="button" pButton icon="fa-check" (click)="save()" label="Save"></button>
-	        </div>
-	    </footer>
+		<form [formGroup]="userTypeform" (ngSubmit)="onSubmit(userTypeform.value)">
+			<div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid type-popup"
+				style="margin: 10px 0px">
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-3">ID:</div>
+					<div class="ui-grid-col-6">
+						<input pInputText type="text" formControlName="userTypeId" [(ngModel)]="userType.idUserType" disabled/>
+					</div>
+				</div>
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-3">Name *:</div>
+					<div>
+						<input pInputText type="text" formControlName="userTypeName"
+							placeholder="Required" [(ngModel)]="userType.name"/>
+						<span class="ui-message ui-messages-error ui-corner-all"
+							*ngIf="!userTypeform.controls['userTypeName'].valid&&userTypeform.controls['userTypeName'].dirty">
+							<i class="fa fa-close"></i> Required!
+						</span>
+					</div>
+				</div>
+				<footer>
+			        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+			        	<button type="button" pButton icon="fa-check" (click)="save()" label="Save" [disabled]="!userTypeform.valid"></button>
+			            <button type="button" pButton icon="fa-close" (click)="closeDialog()" label="Cancel"></button>			            
+			        </div>
+		    	</footer>
+			</div>
+		</form>
 	</p-dialog>
 </div>
