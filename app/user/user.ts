@@ -4,7 +4,8 @@
  */
 
 export class User {
-    username: string;
+    idUser : number;
+    userName: string;
     password: string;
     firstName: string;
     lastName: string;

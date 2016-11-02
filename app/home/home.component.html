@@ -3,8 +3,6 @@
 		<template ngbTabTitle><b>User Type</b></template> 
 		<template ngbTabContent>
 			<div class="col-md-6 col-md-offset-3">
-				<h1>Hi {{currentUser.userName}}!</h1>
-				<p>You're logged in the User Type!!</p>
 				<user-type-list></user-type-list>
 			</div>
 		</template>
@@ -12,10 +10,8 @@
 	<ngb-tab id="userTab">
 		<template ngbTabTitle><b>User</b></template> 
 		<template ngbTabContent>
-			<div class="col-md-6 col-md-offset-3">
-				<h1>Hi {{currentUser.userName}}!</h1>
-				<p>You're logged in the User!!</p>
-				
+			<div>
+				<user-list></user-list>
 			</div>
 		</template>
 	</ngb-tab>
@@ -23,14 +19,6 @@
 		<template ngbTabTitle><b>Bug System Type</b></template> 
 		<template ngbTabContent>
 			<div class="col-md-6 col-md-offset-3">
-				<h1>Hi {{currentUser.userName}}!</h1>
-				<p>You're logged in the Bug System Type!!</p>
-				<h3>All registered users:</h3>
-				<ul>
-					<li *ngFor="let user of users">{{user.userName}} ({{user.name}})
-						- <a (click)="deleteUser(user.id)">Delete</a>
-					</li>
-				</ul>
 				<p>
 					<a [routerLink]="['/login']">Logout</a>
 				</p>
@@ -41,8 +29,6 @@
 		<template ngbTabTitle><b>Bug System</b></template> 
 		<template ngbTabContent>
 			<div class="col-md-6 col-md-offset-3">
-				<h1>Hi {{currentUser.userName}}!</h1>
-				<p>You're logged in the Bug System!!</p>
 			</div>
 		</template>
 	</ngb-tab>
@@ -50,8 +36,6 @@
 		<template ngbTabTitle><b>Rule Manager</b></template> 
 		<template ngbTabContent>
 			<div class="col-md-6 col-md-offset-3">
-				<h1>Hi {{currentUser.userName}}!</h1>
-				<p>You're logged in the Rule Manager!!</p>
 			</div>
 		</template>
 	</ngb-tab>
@@ -59,8 +43,7 @@
 		<template ngbTabTitle><b>Rule Manager Type</b></template> 
 		<template ngbTabContent>
 			<div class="col-md-6 col-md-offset-3">
-				<h1>Hi {{currentUser.userName}}!</h1>
-				<p>You're logged in the Rule Manager Type!!</p>
+
 			</div>
 		</template>
 	</ngb-tab>
@@ -68,8 +51,7 @@
 		<template ngbTabTitle><b>Project</b></template> 
 		<template ngbTabContent>
 			<div class="col-md-6 col-md-offset-3">
-				<h1>Hi {{currentUser.userName}}!</h1>
-				<p>You're logged in the Project!!</p>
+
 			</div>
 		</template>
 	</ngb-tab>

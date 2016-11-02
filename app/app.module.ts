@@ -3,7 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule }    from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { DataTableModule, SharedModule, DialogModule, ButtonModule, PanelModule } from 'primeng/primeng';
+import { DataTableModule, SharedModule, DialogModule, ButtonModule, PanelModule,
+    PasswordModule } from 'primeng/primeng';
+}
 
 // Used to create fake backend
 import { fakeBackendProvider } from './shared/helpers/fake-backend';
@@ -17,6 +19,7 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './user/login.component';
 import { RegisterComponent } from './user/register.component';
 import { UserTypeComponent }from './user/user-type.component'
+import { UserComponent }from './user/user.component'
 
 // Utils
 import { routing } from './routing/app.routing';
@@ -36,6 +39,7 @@ import { AlertService, AuthenticationService, UserService, UserTypeService } fro
         DialogModule,
         ButtonModule,
         PanelModule,
+        PasswordModule,
         NgbModule.forRoot(),
     ],
     declarations: [
@@ -44,7 +48,8 @@ import { AlertService, AuthenticationService, UserService, UserTypeService } fro
         HomeComponent,
         LoginComponent,
         RegisterComponent,
-        UserTypeComponent
+        UserTypeComponent,
+        UserComponent
     ],
     providers: [
         AuthGuard,

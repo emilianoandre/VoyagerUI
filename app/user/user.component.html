@@ -1,0 +1,86 @@
+<div id="userSpinner" class="spinner" hidden>
+  <div class="rect1"></div>
+  <div class="rect2"></div>
+  <div class="rect3"></div>
+  <div class="rect4"></div>
+  <div class="rect5"></div>
+</div>
+
+<div id="userTableDiv">
+	<alert></alert>
+	<p-dataTable [value]="users" [rows]="10" [paginator]="true" [pageLinks]="3" [rowsPerPageOptions]="[5,10,20]"
+			selectionMode="single" [(selection)]="selectedUser" resizableColumns="true"> 
+		<p-column *ngFor="let col of cols" [field]="col.field" [header]="col.header" [sortable]="true"></p-column>
+		<footer>
+			<div class="ui-helper-clearfix" style="width:100%">
+				<button type="button" pButton icon="fa-plus" style="float:left" (click)="showDialog(true)" label="Add"></button>
+				<button type="button" pButton icon="fa-edit" style="float:left" (click)="showDialog(false, selectedUser)" label="Edit"></button>
+				<button type="button" pButton icon="fa-remove" style="float:right" (click)="deleteUser(selectedUser)" label="Delete"></button>
+			</div>
+		</footer>
+	</p-dataTable>
+	
+	<p-dialog header="User Type Details" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true" [width]="500">
+		<form [formGroup]="userform" (ngSubmit)="onSubmit(userform.value)">
+			<div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid"
+				style="margin: 10px 0px">
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-4">ID:</div>
+					<div class="ui-grid-col-6">
+						<input pInputText type="text" formControlName="userId" [(ngModel)]="user.idUser" disabled/>
+					</div>
+				</div>
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-4">User Name *:</div>
+					<div>
+						<input pInputText type="text" formControlName="userName"
+							placeholder="Required" [(ngModel)]="user.userName"/>
+						<span class="ui-message ui-messages-error ui-corner-all"
+							*ngIf="!userform.controls['userName'].valid&&userform.controls['userName'].dirty">
+							<i class="fa fa-close"></i> Required!
+						</span>
+					</div>
+				</div>
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-4">Name *:</div>
+					<div>
+						<input pInputText type="text" formControlName="name"
+							placeholder="Required" [(ngModel)]="user.name"/>
+						<span class="ui-message ui-messages-error ui-corner-all"
+							*ngIf="!userform.controls['name'].valid&&userform.controls['name'].dirty">
+							<i class="fa fa-close"></i> Required!
+						</span>
+					</div>
+				</div>
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-4">Email *:</div>
+					<div>
+						<input pInputText type="text" formControlName="email"
+							placeholder="Required" [(ngModel)]="user.email"/>
+						<span class="ui-message ui-messages-error ui-corner-all"
+							*ngIf="!userform.controls['email'].valid&&userform.controls['email'].dirty">
+							<i class="fa fa-close"></i> Required!
+						</span>
+					</div>
+				</div>
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-4">Password *:</div>
+					<div>
+						<input pPassword type="password" formControlName="password"
+							placeholder="Required" [(ngModel)]="user.password"/>
+						<span class="ui-message ui-messages-error ui-corner-all"
+							*ngIf="!userform.controls['password'].valid&&userform.controls['password'].dirty">
+							<i class="fa fa-close"></i> Required!
+						</span>
+					</div>
+				</div>
+				<footer>
+			        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+			        	<button type="button" pButton icon="fa-check" (click)="save()" label="Save" [disabled]="!userform.valid"></button>
+			            <button type="button" pButton icon="fa-close" (click)="closeDialog()" label="Cancel"></button>			            
+			        </div>
+		    	</footer>
+			</div>
+		</form>
+	</p-dialog>
+</div>

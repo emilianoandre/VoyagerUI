@@ -1,5 +1,5 @@
 /**
- * User Type component that holds the user type list
+ * User component that holds the user list
  * @author eandre
  * 
  */
@@ -8,27 +8,27 @@ import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms'
 import { Message, SelectItem } from 'primeng/primeng';
 
 // Services
-import { UserTypeService } from '../shared/services/user-type.service';
+import { UserService } from '../shared/services/user.service';
 import { AlertService } from '../shared/services/alert.service';
 
 // Models
-import { UserType } from './user-type'
+import { User } from './user'
 
 @Component({
     moduleId : module.id,
-    selector : 'user-type-list',
-    templateUrl : 'user-type.component.html'
+    selector : 'user-list',
+    templateUrl : 'user.component.html'
 })
 
-export class UserTypeComponent implements OnInit {
+export class UserComponent implements OnInit {
     
     displayDialog : boolean;
-    userType:UserType = new UserType();
-    selectedUserType : UserType;
-    newUserType : boolean;
-    userTypes;
+    user:User = new User();
+    selectedUser : User;
+    newUser : boolean;
+    users;
     msgs: Message[] = [];
-    userTypeform: FormGroup;    
+    userform: FormGroup;    
     submitted: boolean;
     
     // Columns to be displayed in the table
@@ -37,7 +37,7 @@ export class UserTypeComponent implements OnInit {
     // Loading widget display
     loading = false;
 
-    constructor(private userTypeService: UserTypeService, 
+    constructor(private userService: UserService, 
             private alertService: AlertService,
             private fb: FormBuilder) { }
 
@@ -46,31 +46,36 @@ export class UserTypeComponent implements OnInit {
         this.loading = true;
         
         // Set up validations
-        this.userTypeform = this.fb.group({
-            'userTypeId': new FormControl(''),
-            'userTypeName': new FormControl('', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(100)]))
+        this.userform = this.fb.group({
+            'userId': new FormControl(''),
+            'userName': new FormControl('', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(100)])),
+            'name': new FormControl('', Validators.compose([Validators.required, Validators.maxLength(100)])),
+            'email': new FormControl('', Validators.compose([Validators.required, Validators.maxLength(100)])),
+            'password': new FormControl('', Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(100)]))
         });
         
-        this.userTypeService.getUserTypes()
+        this.userService.getUsers()
         .subscribe(
             data => {
                 if (data.error) {
                     this.alertService.error(data.error);
                 } else {            
-                    this.userTypes = data.body;
+                    this.users = data.body;
                 }
                 // Stop the loading widget
                 this.loading = false;
             },
             error => {
-                this.alertService.error('Failed to load the User Types. ' + error);
+                this.alertService.error('Failed to load the Users. ' + error);
                 // Stop the loading widget
                 this.loading = false;
             });
         
         this.cols = [
-                     {field: 'idUserType', header: 'ID'},
-                     {field: 'name', header: 'Name'}
+                     {field: 'idUser', header: 'ID'},
+                     {field: 'userName', header: 'User Name'},
+                     {field: 'name', header: 'Name'},
+                     {field: 'email', header: 'Email'}
                  ];
     }
     
@@ -87,79 +92,79 @@ export class UserTypeComponent implements OnInit {
     /**
      * Get the message from the Add/Edit form
      */
-    get diagnostic() { return JSON.stringify(this.userTypeform.value); }
+    get diagnostic() { return JSON.stringify(this.userform.value); }
     
     /**
      *  Display Add/Edit Dialog
      *  @param create: boolean to know if we should display add or edit dialog
-     *  @param selectedUserType: selected user type
+     *  @param selectedUser: selected user
      */
-    showDialog(create:boolean, selectedUserType:UserType) {
+    showDialog(create:boolean, selectedUser:User) {
         
         // Clear Alerts
         this.alertService.clearAlert();
         
         // Check if a row was selected on edit
-        if (!create && !selectedUserType) {
+        if (!create && !selectedUser) {
             this.alertService.error('Please select a row');
             return;
         }
         
-        this.newUserType = create;
+        this.newUser = create;
         if (create) {
-            this.userType = new UserType();
+            this.user = new User();
             this.displayDialog = true;
         } else {        
-            this.userType = this.cloneUserType(selectedUserType);
+            this.user = this.cloneUser(selectedUser);
         }
         this.displayDialog = true;
     }
     
     /**
-     * Saves a new or old user Type
+     * Saves a new or old user
      */
     save() {
         // Start the loading widget
         this.loading = true;
         
-        // Check if it's a new user type
-        if (this.newUserType) {
-            this.userTypeService.createUserType(this.userType.name)
+        // Check if it's a new user
+        if (this.newUser) {
+            this.userService.createUser(this.user.userName)
             .subscribe(
                 data => {
                     if (data.error) {
                         this.alertService.error(data.error);
                     } else {
-                        this.userTypes.push(data.body);
+                        this.users.push(data.body);
                     }
                 },
                 error => {
-                    this.alertService.error('Failed to create User Type. ' + error);
+                    this.alertService.error('Failed to create User. ' + error);
                 },
                 () => {
-                    this.userType = null;
+                    this.user = null;
                     // Stop the loading widget
                     this.loading = false;
                 });
         } else {
-            this.userTypeService.updateUserType(this.userType)
+            this.userService.updateUser(this.user)
             .subscribe(
                 data => {
                     if (data.error) {
                         this.alertService.error(data.error);
                     } else {                
-                        this.userTypes[this.findSelectedUserTypeIndex()] = this.userType;
+                        this.users[this.findSelectedUserIndex()] = this.user;
                     }
                     // Stop the loading widget
                     this.loading = false;
                 },
                 error => {
-                    this.alertService.error('Failed to update User Type. ' + error);
+                    this.alertService.error('Failed to update User. ' + error);
                     // Stop the loading widget
                     this.loading = false;
                 },
                 () => {
-                    this.userType = null;
+                    this.user = null;
                     // Stop the loading widget
                     this.loading = false;
                 });
@@ -170,13 +175,13 @@ export class UserTypeComponent implements OnInit {
     }
     
     /**
-     * Deletes a user type
-     * @param selectedUserType: selected user type
+     * Deletes a user
+     * @param selectedUser: selected user
      */
-    deleteUserType(selectedUserType:UserType) {
+    deleteUser(selectedUser:User) {
         // Clear Alerts
         this.alertService.clearAlert();
-        if (!selectedUserType) {
+        if (!selectedUser) {
             this.alertService.error('Please select a row');
             return;
         }
@@ -184,30 +189,30 @@ export class UserTypeComponent implements OnInit {
         // Start the loading widget
         this.loading = true;
         
-        this.userTypeService.deleteUserType(this.selectedUserType.idUserType)
+        this.userService.deleteUser(this.selectedUser.idUser)
         .subscribe(
             data => {
                 if (data && data.error) {
                     this.alertService.error(data.error);
                 } else {            
-                    this.userTypes.splice(this.findSelectedUserTypeIndex(), 1);
+                    this.users.splice(this.findSelectedUserIndex(), 1);
                 }
             },
             error => {
-                this.alertService.error('Failed to delete User Type. ' + error);                   
+                this.alertService.error('Failed to delete User. ' + error);                   
             },
             () => {
-                this.userType = null;
+                this.user = null;
                 // Stop the loading widget
                 this.loading = false;
             });
     }
     
     /**
-     * Returns the selected user type by index
+     * Returns the selected user by index
      */
-    findSelectedUserTypeIndex(): number {
-        return this.userTypes.indexOf(this.selectedUserType);
+    findSelectedUserIndex(): number {
+        return this.users.indexOf(this.selectedUser);
     }
     
     /**
@@ -219,14 +224,14 @@ export class UserTypeComponent implements OnInit {
     }
     
     /**
-     * Clones a user type
-     * @param userType user type to clone
+     * Clones a user
+     * @param user user to clone
      */
-    cloneUserType(userType: UserType): UserType {
-        let userTypeToUpdate = new UserType();
-        for(let prop in userType) {
-            userTypeToUpdate[prop] = userType[prop];
+    cloneUser(user: User): User {
+        let userToUpdate = new User();
+        for(let prop in user) {
+            userToUpdate[prop] = user[prop];
         }
-        return userTypeToUpdate;
+        return userToUpdate;
     }
 }

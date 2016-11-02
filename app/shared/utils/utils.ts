@@ -39,7 +39,7 @@ export class Utils {
         // Check if we received a response
         if(response && response.status) {
             if (response.json().status == 200) {
-                return response.json().body;
+                return response.json();
             } else if (response.json().errors) {                
                 let errorList = "";
                 // Get all errors

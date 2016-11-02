@@ -6,33 +6,52 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 
 //Shared
+import { Constants } from '../utils/constants';
 import { Utils } from '../utils/utils';
 
 @Injectable()
 export class UserService {
     
     // Constants
-    private SERVICE_USER = "Login/";
+    private SERVICE_USER = "User/";
+    private METHOD_USER = "user";
+    private METHOD_DELETE_USER = "deleteUser";
     
     constructor(private http: Http) { }
- 
-    getAll() {
-        return this.http.get('/api/users', Utils.getJwt()).map((response: Response) => response.json());
+    
+    /**
+     * Gets the list of users
+     */
+    getUsers() {        
+        // Get Response        
+        return this.http.get(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_USER, Utils.getJwt())
+        .map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
     }
- 
-    getById(id) {
-        return this.http.get('/api/users/' + id, Utils.getJwt()).map((response: Response) => response.json());
+    
+    /**
+     * Creates a user from a name
+     * @param name of the user
+     */
+    createUser(name) {
+        return this.http.post(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_USER, name, Utils.getJwt())
+        .map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
     }
- 
-    create(user) {
-        return this.http.post('/api/users', user, Utils.getJwt()).map((response: Response) => response.json());
+    
+    /**
+     * Updates a user
+     * @param updated user
+     */
+    updateUser(user) {
+        return this.http.put(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_USER,
+                JSON.stringify(user), Utils.getJwt()).map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
     }
- 
-    update(user) {
-        return this.http.put('/api/users/' + user.id, user, Utils.getJwt()).map((response: Response) => response.json());
-    }
- 
-    delete(id) {
-        return this.http.put('/api/users/' + id, Utils.getJwt()).map((response: Response) => response.json());
+    
+    /**
+     * Deletes a
+     * @param id of the
+     */
+    deleteUser(userId) {
+        return this.http.put(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_DELETE_USER,
+                userId, Utils.getJwt()).map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
     }
 }
