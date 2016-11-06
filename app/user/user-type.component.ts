@@ -4,7 +4,7 @@
  * 
  */
 import { Component, OnInit } from '@angular/core';
-import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { Validators, FormControl, FormGroup, FormBuilder, FormsModule } from '@angular/forms';
 import { Message, SelectItem } from 'primeng/primeng';
 
 // Services
@@ -16,7 +16,7 @@ import { UserType } from './user-type'
 
 @Component({
     moduleId : module.id,
-    selector : 'user-type-list',
+    selector : 'user-type-component',
     templateUrl : 'user-type.component.html'
 })
 
@@ -28,7 +28,7 @@ export class UserTypeComponent implements OnInit {
     newUserType : boolean;
     userTypes;
     msgs: Message[] = [];
-    userTypeform: FormGroup;    
+    userTypeForm: FormGroup;    
     submitted: boolean;
     
     // Columns to be displayed in the table
@@ -39,19 +39,29 @@ export class UserTypeComponent implements OnInit {
 
     constructor(private userTypeService: UserTypeService, 
             private alertService: AlertService,
-            private fb: FormBuilder) { }
+            private formBuilder: FormBuilder) { }
 
     ngOnInit() {
-        // Start the loading widget
-        this.loading = true;
-        
         // Set up validations
-        this.userTypeform = this.fb.group({
+        this.userTypeForm = this.formBuilder.group({
             'userTypeId': new FormControl(''),
             'userTypeName': new FormControl('', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(100)]))
         });
         
-        this.userTypeService.getUserTypes()
+        this.cols = [
+                     {field: 'idUserType', header: 'ID'},
+                     {field: 'name', header: 'Name'}
+                     ];
+        
+        this.loadUserTypes();
+    }
+    
+    /**
+     * Returns an observer with the call to load the user types
+     * Observable call object
+     */
+    loadUserTypes() {
+        return this.userTypeService.getUserTypes()
         .subscribe(
             data => {
                 if (data.error) {
@@ -66,28 +76,15 @@ export class UserTypeComponent implements OnInit {
                 this.alertService.error('Failed to load the User Types. ' + error);
                 // Stop the loading widget
                 this.loading = false;
-            });
-        
-        this.cols = [
-                     {field: 'idUserType', header: 'ID'},
-                     {field: 'name', header: 'Name'}
-                 ];
-    }
-    
-    /**
-     * Code to be executed when submitting the form
-     * 
-     */
-    onSubmit(value: string) {
-        this.submitted = true;
-        this.msgs = [];
-        this.msgs.push({severity:'info', summary:'Success', detail:'Form Submitted'});
+            });         
     }
     
     /**
      * Get the message from the Add/Edit form
      */
-    get diagnostic() { return JSON.stringify(this.userTypeform.value); }
+    get diagnostic() { 
+        return JSON.stringify(this.userTypeForm.value);        
+    }
     
     /**
      *  Display Add/Edit Dialog
@@ -98,6 +95,7 @@ export class UserTypeComponent implements OnInit {
         
         // Clear Alerts
         this.alertService.clearAlert();
+        this.userTypeForm.markAsPristine(false);
         
         // Check if a row was selected on edit
         if (!create && !selectedUserType) {
@@ -109,7 +107,7 @@ export class UserTypeComponent implements OnInit {
         if (create) {
             this.userType = new UserType();
             this.displayDialog = true;
-        } else {        
+        } else {
             this.userType = this.cloneUserType(selectedUserType);
         }
         this.displayDialog = true;
@@ -121,6 +119,9 @@ export class UserTypeComponent implements OnInit {
     save() {
         // Start the loading widget
         this.loading = true;
+        
+        // Close the dialog
+        this.displayDialog = false;
         
         // Check if it's a new user type
         if (this.newUserType) {
@@ -137,7 +138,6 @@ export class UserTypeComponent implements OnInit {
                     this.alertService.error('Failed to create User Type. ' + error);
                 },
                 () => {
-                    this.userType = null;
                     // Stop the loading widget
                     this.loading = false;
                 });
@@ -159,14 +159,11 @@ export class UserTypeComponent implements OnInit {
                     this.loading = false;
                 },
                 () => {
-                    this.userType = null;
                     // Stop the loading widget
                     this.loading = false;
                 });
         }
-        
-        // Close the dialog
-        this.displayDialog = false;
+
     }
     
     /**
@@ -189,7 +186,7 @@ export class UserTypeComponent implements OnInit {
             data => {
                 if (data && data.error) {
                     this.alertService.error(data.error);
-                } else {            
+                } else {
                     this.userTypes.splice(this.findSelectedUserTypeIndex(), 1);
                 }
             },
@@ -197,7 +194,6 @@ export class UserTypeComponent implements OnInit {
                 this.alertService.error('Failed to delete User Type. ' + error);                   
             },
             () => {
-                this.userType = null;
                 // Stop the loading widget
                 this.loading = false;
             });

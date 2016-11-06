@@ -29,11 +29,11 @@ export class UserService {
     }
     
     /**
-     * Creates a user from a name
-     * @param name of the user
+     * Creates a user
+     * @param user object to create
      */
-    createUser(name) {
-        return this.http.post(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_USER, name, Utils.getJwt())
+    createUser(user) {
+        return this.http.post(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_USER, user, Utils.getJwt())
         .map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
     }
     

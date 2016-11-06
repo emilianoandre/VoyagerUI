@@ -54,22 +54,7 @@ export class UserComponent implements OnInit {
             'password': new FormControl('', Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(100)]))
         });
         
-        this.userService.getUsers()
-        .subscribe(
-            data => {
-                if (data.error) {
-                    this.alertService.error(data.error);
-                } else {            
-                    this.users = data.body;
-                }
-                // Stop the loading widget
-                this.loading = false;
-            },
-            error => {
-                this.alertService.error('Failed to load the Users. ' + error);
-                // Stop the loading widget
-                this.loading = false;
-            });
+        this.loadUsers();
         
         this.cols = [
                      {field: 'idUser', header: 'ID'},
@@ -77,6 +62,29 @@ export class UserComponent implements OnInit {
                      {field: 'name', header: 'Name'},
                      {field: 'email', header: 'Email'}
                  ];
+    }
+    
+    /**
+     * Returns an observer with the call to load the user types
+     * Observable call object
+     */
+    loadUsers() {
+        return  this.userService.getUsers()
+        .subscribe(
+                data => {
+                    if (data.error) {
+                        this.alertService.error(data.error);
+                    } else {            
+                        this.users = data.body;
+                    }
+                    // Stop the loading widget
+                    this.loading = false;
+                },
+                error => {
+                    this.alertService.error('Failed to load the Users. ' + error);
+                    // Stop the loading widget
+                    this.loading = false;
+                }); 
     }
     
     /**
@@ -129,7 +137,7 @@ export class UserComponent implements OnInit {
         
         // Check if it's a new user
         if (this.newUser) {
-            this.userService.createUser(this.user.userName)
+            this.userService.createUser(this.user)
             .subscribe(
                 data => {
                     if (data.error) {
@@ -142,7 +150,7 @@ export class UserComponent implements OnInit {
                     this.alertService.error('Failed to create User. ' + error);
                 },
                 () => {
-                    this.user = null;
+                    this.user = new User();
                     // Stop the loading widget
                     this.loading = false;
                 });
@@ -164,7 +172,7 @@ export class UserComponent implements OnInit {
                     this.loading = false;
                 },
                 () => {
-                    this.user = null;
+                    this.user = new User();
                     // Stop the loading widget
                     this.loading = false;
                 });

@@ -5,7 +5,6 @@ import { HttpModule } from '@angular/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DataTableModule, SharedModule, DialogModule, ButtonModule, PanelModule,
     PasswordModule } from 'primeng/primeng';
-}
 
 // Used to create fake backend
 import { fakeBackendProvider } from './shared/helpers/fake-backend';

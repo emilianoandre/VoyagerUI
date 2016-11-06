@@ -24,7 +24,7 @@ export class RegisterComponent {
  
     register() {
         this.loading = true;
-        this.userService.create(this.model)
+        /*this.userService.create(this.model)
             .subscribe(
                 data => {
                     // set success message and pass true paramater to persist the message after redirecting to the login page
@@ -34,6 +34,6 @@ export class RegisterComponent {
                 error => {
                     this.alertService.error(error);
                     this.loading = false;
-                });
+                });*/
     }
 }
