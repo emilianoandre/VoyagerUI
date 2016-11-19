@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule }    from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DataTableModule, SharedModule, DialogModule, ButtonModule, PanelModule,
-    PasswordModule } from 'primeng/primeng';
+    PasswordModule, TabViewModule } from 'primeng/primeng';
 
 // Used to create fake backend
 import { fakeBackendProvider } from './shared/helpers/fake-backend';
@@ -15,17 +15,21 @@ import { BaseRequestOptions } from '@angular/http';
 import { AppComponent }  from './app.component';
 import { AlertComponent } from './shared/alerts/alert.component';
 import { HomeComponent } from './home/home.component';
-import { LoginComponent } from './user/login.component';
-import { RegisterComponent } from './user/register.component';
-import { UserTypeComponent }from './user/user-type.component'
-import { UserComponent }from './user/user.component'
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
+import { UserTypeComponent }from './user-type/user-type.component';
+import { UserComponent }from './user/user.component';
+import { BugSystemTypeComponent } from './bug-system-type/bug-system-type.component';
+import { RuleManagerTypeComponent } from './rule-manager-type/rule-manager-type.component';
+import { PermissionComponent } from './permission/permission.component';
 
 // Utils
 import { routing } from './routing/app.routing';
 import { AuthGuard } from './shared/auth/auth.guard';
 
 // Services
-import { AlertService, AuthenticationService, UserService, UserTypeService } from './shared/services/index';
+import { AlertService, AuthenticationService, UserService, UserTypeService, BugSystemTypeService, 
+    RuleManagerTypeService, PermissionService } from './shared/services/index';
  
 @NgModule({
     imports: [
@@ -40,6 +44,7 @@ import { AlertService, AuthenticationService, UserService, UserTypeService } fro
         PanelModule,
         PasswordModule,
         NgbModule.forRoot(),
+        TabViewModule
     ],
     declarations: [
         AppComponent,
@@ -48,15 +53,20 @@ import { AlertService, AuthenticationService, UserService, UserTypeService } fro
         LoginComponent,
         RegisterComponent,
         UserTypeComponent,
-        UserComponent
+        UserComponent,
+        BugSystemTypeComponent,
+        RuleManagerTypeComponent,
+        PermissionComponent
     ],
     providers: [
         AuthGuard,
         AlertService,
         AuthenticationService,
         UserService,
-        UserTypeService
- 
+        UserTypeService,
+        BugSystemTypeService,
+        RuleManagerTypeService,
+        PermissionService
         // providers used to create fake backend
         //fakeBackendProvider,
         //MockBackend,

@@ -1,100 +1,124 @@
 a {
-    cursor: pointer;
+	cursor: pointer;
 }
 
 .help-block {
-    font-size: 12px;
+	font-size: 12px;
 }
 
+/* Spinner */
 .spinner {
-  margin: 100px auto;
-  width: 50px;
-  height: 40px;
-  text-align: center;
-  font-size: 10px;
+	margin: 100px auto;
+	width: 50px;
+	height: 40px;
+	text-align: center;
+	font-size: 10px;
 }
 
-.spinner > div {
-  background-color: #337ab7;
-  height: 100%;
-  width: 6px;
-  display: inline-block;
-  
-  -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
-  animation: sk-stretchdelay 1.2s infinite ease-in-out;
+.spinner>div {
+	background-color: #337ab7;
+	height: 100%;
+	width: 6px;
+	display: inline-block;
+	-webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+	animation: sk-stretchdelay 1.2s infinite ease-in-out;
 }
 
 .spinner .rect2 {
-  -webkit-animation-delay: -1.1s;
-  animation-delay: -1.1s;
+	-webkit-animation-delay: -1.1s;
+	animation-delay: -1.1s;
 }
 
 .spinner .rect3 {
-  -webkit-animation-delay: -1.0s;
-  animation-delay: -1.0s;
+	-webkit-animation-delay: -1.0s;
+	animation-delay: -1.0s;
 }
 
 .spinner .rect4 {
-  -webkit-animation-delay: -0.9s;
-  animation-delay: -0.9s;
+	-webkit-animation-delay: -0.9s;
+	animation-delay: -0.9s;
 }
 
 .spinner .rect5 {
-  -webkit-animation-delay: -0.8s;
-  animation-delay: -0.8s;
+	-webkit-animation-delay: -0.8s;
+	animation-delay: -0.8s;
 }
 
-@-webkit-keyframes sk-stretchdelay {
-  0%, 40%, 100% { -webkit-transform: scaleY(0.4) }  
-  20% { -webkit-transform: scaleY(1.0) }
+/* Headers */
+@
+-webkit-keyframes sk-stretchdelay { 0%, 40%, 100% {
+	-webkit-transform: scaleY(0.4)
 }
 
-@keyframes sk-stretchdelay {
-  0%, 40%, 100% { 
-    transform: scaleY(0.4);
-    -webkit-transform: scaleY(0.4);
-  }  20% { 
-    transform: scaleY(1.0);
-    -webkit-transform: scaleY(1.0);
-  }
+20%{
+	-webkit-transform: scaleY(1.0) 
 }
 
+}
+@
+keyframes sk-stretchdelay { 0%, 40%, 100% {
+	transform: scaleY(0.4);
+	-webkit-transform: scaleY(0.4);
+}
+
+20%
+{
+transform
+:
+ 
+scaleY
+(1
+.0
+);
+
+    
+-webkit-transform
+:
+ 
+scaleY
+(1
+.0
+);
+
+  
+}
+}
 @import url('http://fonts.googleapis.com/css?family=Open+Sans:400,700');
 
-html{
+html {
 	background-color: #eaf0f2;
 }
 
-body{
-	font:14px/1.5 Arial, Helvetica, sans-serif;
-	padding:0;
-	margin:0;
+body {
+	font: 14px/1.5 Arial, Helvetica, sans-serif;
+	padding: 0;
+	margin: 0;
 }
 
-.menu{
+.menu {
 	text-align: center;
 	padding-top: 25px;
-	margin-bottom:200px;
+	margin-bottom: 200px;
 }
 
-.menu img{
+.menu img {
 	opacity: 0.4;
 	margin: 20px auto;
 }
 
-.menu h1{
-	margin-top:0;
+.menu h1 {
+	margin-top: 0;
 	font: normal 32px/1.5 'Open Sans', sans-serif;
 	color: #3F71AE;
 	padding-bottom: 16px;
 }
 
-.menu h2{
+.menu h2 {
 	color: #F05283;
 }
 
-.menu h2 a{
-	color:inherit;
+.menu h2 a {
+	color: inherit;
 	text-decoration: none;
 	display: inline-block;
 	border: 1px solid #F05283;
@@ -104,10 +128,10 @@ body{
 	text-transform: uppercase;
 }
 
-.menu h2 a:hover{
-	background-color:#F05283;
-	transition:0.2s;
-	color:#fff;
+.menu h2 a:hover {
+	background-color: #F05283;
+	transition: 0.2s;
+	color: #fff;
 }
 
 .menu ul {
@@ -115,7 +139,7 @@ body{
 	margin: 60px auto 0;
 }
 
-.menu ul a{
+.menu ul a {
 	text-decoration: none;
 	color: #FFF;
 	text-align: left;
@@ -128,11 +152,10 @@ body{
 	margin: 4px;
 	line-height: 1;
 	outline: none;
-
 	transition: 0.2s ease;
 }
 
-.menu ul li a.active{
+.menu ul li a.active {
 	background-color: #66B650;
 	pointer-events: none;
 }
@@ -141,36 +164,19 @@ body{
 	opacity: 1;
 }
 
-.menu ul{
+.menu ul {
 	list-style: none;
 	padding: 0;
 }
 
-.menu ul li{
+.menu ul li {
 	display: inline-block;
 }
 
-@media (max-height:800px){
-	.menu { padding-top:40px; }
-}
-
-
-/* -- Demo ads -- */
-
-@media (max-width: 1200px) {
-	#bsaHolder{ display:none;}
-}
-
-/* -- Link to Tutorialzine -- */
-
-.tz-link{
-	text-decoration: none;
-	color: #fff !important;
-	font: bold 36px Arial,Helvetica,sans-serif !important;
-}
-
-.tz-link span{
-	color: #da431c;
+@media ( max-height :800px) {
+	.menu {
+		padding-top: 40px;
+	}
 }
 
 .header-basic {
@@ -188,7 +194,6 @@ body{
 }
 
 /* Logo */
-
 .header-basic .header-limiter h1 {
 	float: left;
 	font: normal 28px Cookie, Arial, Helvetica, sans-serif;
@@ -200,29 +205,28 @@ body{
 	color: #756363;
 }
 
-/* The header links */
-
+/* Header links */
 .header-basic .header-limiter a {
 	color: #ffffff;
 	text-decoration: none;
 }
 
-.header-basic .header-limiter nav{
-	font:16px Arial, Helvetica, sans-serif;
+.header-basic .header-limiter nav {
+	font: 16px Arial, Helvetica, sans-serif;
 	line-height: 40px;
 	float: right;
 }
 
-.header-basic .header-limiter nav a{
+.header-basic .header-limiter nav a {
 	display: inline-block;
 	padding: 0 5px;
-	text-decoration:none;
+	text-decoration: none;
 	color: #ffffff;
 	font-size: 16px;
 	opacity: 0.9;
 }
 
-.header-basic .header-limiter nav a:hover{
+.header-basic .header-limiter nav a:hover {
 	opacity: 1;
 }
 
@@ -233,14 +237,11 @@ body{
 }
 
 /* Making the header responsive */
-
 @media all and (max-width: 600px) {
-
 	.header-basic {
 		padding: 20px 0;
 		height: 75px;
 	}
-
 	.header-basic .header-limiter h1 {
 		float: none;
 		margin: -8px 0 10px;
@@ -248,27 +249,21 @@ body{
 		font-size: 24px;
 		line-height: 1;
 	}
-
 	.header-basic .header-limiter nav {
 		line-height: 1;
-		float:none;
+		float: none;
 	}
-
 	.header-basic .header-limiter nav a {
 		font-size: 13px;
 	}
-
 }
-
-/* For the headers to look good, be sure to reset the margin and padding of the body */
 
 body {
-	margin:0;
-	padding:0;
+	margin: 0;
+	padding: 0;
 }
 
-/* For the popups */
-
+/* Popups */
 .type-popup {
 	width: 400px;
 }
@@ -276,4 +271,20 @@ body {
 .ui-dialog {
 	display: inline-table;
 	width: auto;
+}
+
+/* Tables and Columns */
+.idColumn {
+	width: 120px;
+}
+
+/* Loading Widget */
+.centered_orange {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-left: -59px;
+	margin-top: -59px;
+	color: #337ab7;
+	font-size: -webkit-xxx-large;
 }

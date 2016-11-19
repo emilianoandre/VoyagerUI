@@ -3,7 +3,7 @@
  * @author eandre
  * 
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Validators, FormControl, FormGroup, FormBuilder, FormsModule } from '@angular/forms';
 import { Message, SelectItem } from 'primeng/primeng';
 
@@ -12,7 +12,7 @@ import { UserTypeService } from '../shared/services/user-type.service';
 import { AlertService } from '../shared/services/alert.service';
 
 // Models
-import { UserType } from './user-type'
+import { Type } from '../shared/models/type';
 
 @Component({
     moduleId : module.id,
@@ -21,10 +21,12 @@ import { UserType } from './user-type'
 })
 
 export class UserTypeComponent implements OnInit {
+    //Events
+    @Output('loadingModal') updateLoadingModal = new EventEmitter(); //Event handled by home.component to show and hide the loading widget
     
     displayDialog : boolean;
-    userType:UserType = new UserType();
-    selectedUserType : UserType;
+    userType:Type = new Type();
+    selectedUserType : Type;
     newUserType : boolean;
     userTypes;
     msgs: Message[] = [];
@@ -33,9 +35,6 @@ export class UserTypeComponent implements OnInit {
     
     // Columns to be displayed in the table
     cols : any[];
-    
-    // Loading widget display
-    loading = false;
 
     constructor(private userTypeService: UserTypeService, 
             private alertService: AlertService,
@@ -44,16 +43,14 @@ export class UserTypeComponent implements OnInit {
     ngOnInit() {
         // Set up validations
         this.userTypeForm = this.formBuilder.group({
-            'userTypeId': new FormControl(''),
+            'userTypeId': new FormControl({value: '', disabled: true}),
             'userTypeName': new FormControl('', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(100)]))
         });
         
         this.cols = [
-                     {field: 'idUserType', header: 'ID'},
+                     {field: 'idType', header: 'ID',  styleClass:'idColumn'},
                      {field: 'name', header: 'Name'}
                      ];
-        
-        this.loadUserTypes();
     }
     
     /**
@@ -61,22 +58,27 @@ export class UserTypeComponent implements OnInit {
      * Observable call object
      */
     loadUserTypes() {
-        return this.userTypeService.getUserTypes()
-        .subscribe(
+        let getUserTypesObservable = this.userTypeService.getUserTypes();
+        
+        getUserTypesObservable.subscribe(
             data => {
                 if (data.error) {
                     this.alertService.error(data.error);
-                } else {            
-                    this.userTypes = data.body;
                 }
-                // Stop the loading widget
-                this.loading = false;
             },
             error => {
                 this.alertService.error('Failed to load the User Types. ' + error);
-                // Stop the loading widget
-                this.loading = false;
-            });         
+            });
+        
+        return getUserTypesObservable;
+    }
+    
+    /**
+     * Function used to fill the data in the screen
+     * @param userTypes list of userTypes to load
+     */
+    fillData(userTypes) {
+        this.userTypes = userTypes;
     }
     
     /**
@@ -91,7 +93,7 @@ export class UserTypeComponent implements OnInit {
      *  @param create: boolean to know if we should display add or edit dialog
      *  @param selectedUserType: selected user type
      */
-    showDialog(create:boolean, selectedUserType:UserType) {
+    showDialog(create:boolean, selectedUserType:Type) {
         
         // Clear Alerts
         this.alertService.clearAlert();
@@ -105,7 +107,7 @@ export class UserTypeComponent implements OnInit {
         
         this.newUserType = create;
         if (create) {
-            this.userType = new UserType();
+            this.userType = new Type();
             this.displayDialog = true;
         } else {
             this.userType = this.cloneUserType(selectedUserType);
@@ -118,7 +120,7 @@ export class UserTypeComponent implements OnInit {
      */
     save() {
         // Start the loading widget
-        this.loading = true;
+        this.showLoadingModal();
         
         // Close the dialog
         this.displayDialog = false;
@@ -139,7 +141,7 @@ export class UserTypeComponent implements OnInit {
                 },
                 () => {
                     // Stop the loading widget
-                    this.loading = false;
+                    this.hideLoadingModal();
                 });
         } else {
             this.userTypeService.updateUserType(this.userType)
@@ -151,16 +153,16 @@ export class UserTypeComponent implements OnInit {
                         this.userTypes[this.findSelectedUserTypeIndex()] = this.userType;
                     }
                     // Stop the loading widget
-                    this.loading = false;
+                    this.hideLoadingModal();
                 },
                 error => {
                     this.alertService.error('Failed to update User Type. ' + error);
                     // Stop the loading widget
-                    this.loading = false;
+                    this.hideLoadingModal();
                 },
                 () => {
                     // Stop the loading widget
-                    this.loading = false;
+                    this.hideLoadingModal();
                 });
         }
 
@@ -170,7 +172,7 @@ export class UserTypeComponent implements OnInit {
      * Deletes a user type
      * @param selectedUserType: selected user type
      */
-    deleteUserType(selectedUserType:UserType) {
+    deleteUserType(selectedUserType:Type) {
         // Clear Alerts
         this.alertService.clearAlert();
         if (!selectedUserType) {
@@ -179,9 +181,9 @@ export class UserTypeComponent implements OnInit {
         }
         
         // Start the loading widget
-        this.loading = true;
+        this.showLoadingModal();
         
-        this.userTypeService.deleteUserType(this.selectedUserType.idUserType)
+        this.userTypeService.deleteUserType(this.selectedUserType.idType)
         .subscribe(
             data => {
                 if (data && data.error) {
@@ -195,7 +197,7 @@ export class UserTypeComponent implements OnInit {
             },
             () => {
                 // Stop the loading widget
-                this.loading = false;
+                this.hideLoadingModal();
             });
     }
     
@@ -218,11 +220,25 @@ export class UserTypeComponent implements OnInit {
      * Clones a user type
      * @param userType user type to clone
      */
-    cloneUserType(userType: UserType): UserType {
-        let userTypeToUpdate = new UserType();
+    cloneUserType(userType: Type): Type {
+        let userTypeToUpdate = new Type();
         for(let prop in userType) {
             userTypeToUpdate[prop] = userType[prop];
         }
         return userTypeToUpdate;
+    }
+    
+    /**
+     * Function used to emit updateLoadingModal event with a request to show the loading modal if it is not showing yet
+     */
+    private showLoadingModal() {
+        this.updateLoadingModal.emit('show');
+    }
+    
+    /**
+     * Function used to emit the updateLoadingModal event with a request to hide the loading modal
+     */
+    private hideLoadingModal() {
+        this.updateLoadingModal.emit('hide');
     }
 }

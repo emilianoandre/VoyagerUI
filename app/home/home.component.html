@@ -1,58 +1,42 @@
-<ngb-tabset activeId="userTypeTab">
-	<ngb-tab id="userTypeTab">
-		<template ngbTabTitle><b>User Type</b></template> 
-		<template ngbTabContent>
-			<div class="col-md-6 col-md-offset-3">
-				<user-type-component #userTypeComponent ></user-type-component>
-			</div>
-		</template>
-	</ngb-tab>
-	<ngb-tab id="userTab">
-		<template ngbTabTitle><b>User</b></template> 
-		<template ngbTabContent>
-			<div>
-				<user-list></user-list>
-			</div>
-		</template>
-	</ngb-tab>
-	<ngb-tab  id="bugSystemTypeTab">
-		<template ngbTabTitle><b>Bug System Type</b></template> 
-		<template ngbTabContent>
-			<div class="col-md-6 col-md-offset-3">
-				<p>
-					<a [routerLink]="['/login']">Logout</a>
-				</p>
-			</div>
-		</template>
-	</ngb-tab>
-	<ngb-tab id="bugSystemTab">
-		<template ngbTabTitle><b>Bug System</b></template> 
-		<template ngbTabContent>
-			<div class="col-md-6 col-md-offset-3">
-			</div>
-		</template>
-	</ngb-tab>
-	<ngb-tab id="ruleManagerTab">
-		<template ngbTabTitle><b>Rule Manager</b></template> 
-		<template ngbTabContent>
-			<div class="col-md-6 col-md-offset-3">
-			</div>
-		</template>
-	</ngb-tab>
-	<ngb-tab id="ruleManagerTypeTab">
-		<template ngbTabTitle><b>Rule Manager Type</b></template> 
-		<template ngbTabContent>
-			<div class="col-md-6 col-md-offset-3">
-
-			</div>
-		</template>
-	</ngb-tab>
-	<ngb-tab id="projectTab">
-		<template ngbTabTitle><b>Project</b></template> 
-		<template ngbTabContent>
-			<div class="col-md-6 col-md-offset-3">
-
-			</div>
-		</template>
-	</ngb-tab>
-</ngb-tabset>
+<p-tabView>
+	<p-tabPanel header="Projects">
+		<div>
+		</div>
+	</p-tabPanel>
+	<p-tabPanel header="Rule Managers">
+		<div>
+		</div>
+	</p-tabPanel>
+	<p-tabPanel header="Rule Manager Types" [selected]="true">
+		<div>
+			<rule-manager-type-component (loadingModal)="updateLoadingModal($event)"></rule-manager-type-component>
+		</div>
+	</p-tabPanel>
+	<p-tabPanel header="Bug Systems">
+		<div>
+		</div>
+	</p-tabPanel>
+	<p-tabPanel header="Bug System Types">
+		<div>
+			<bug-system-type-component (loadingModal)="updateLoadingModal($event)"></bug-system-type-component>
+			<p>
+				<a [routerLink]="['/login']">Logout</a>
+			</p>
+		</div>
+	</p-tabPanel>
+	<p-tabPanel header="Users">
+		<div>
+			<user-list (loadingModal)="updateLoadingModal($event)"></user-list>
+		</div>
+	</p-tabPanel>
+	<p-tabPanel header="User Types">
+		<div>
+			<user-type-component (loadingModal)="updateLoadingModal($event)"></user-type-component>
+		</div>
+	</p-tabPanel>
+	<p-tabPanel header="Permissions">
+		<div>
+			<permission-component (loadingModal)="updateLoadingModal($event)"></permission-component>
+		</div>
+	</p-tabPanel>
+</p-tabView>

@@ -1,0 +1,72 @@
+<div id="bugSystemTypeSpinner" class="spinner" hidden>
+	<div class="rect1"></div>
+	<div class="rect2"></div>
+	<div class="rect3"></div>
+	<div class="rect4"></div>
+	<div class="rect5"></div>
+</div>
+
+<div id="bugSystemTypeTableDiv">
+	<alert></alert>
+	<p-dataTable [value]="bugSystemTypes" [rows]="10" [paginator]="true"
+		[pageLinks]="3" [rowsPerPageOptions]="[5,10,20]"
+		selectionMode="single" [(selection)]="selectedBugSystemType"> 
+		<p-column *ngFor="let col of cols" [field]="col.field" [header]="col.header" [styleClass]="col.styleClass"
+			[sortable]="true">
+		</p-column>
+		<footer>
+			<div class="ui-helper-clearfix" style="width: 100%">
+				<button type="button" pButton icon="fa-plus" style="float: left"
+					(click)="showDialog(true)" label="Add"></button>
+				<button type="button" pButton icon="fa-edit" style="float: left"
+					(click)="showDialog(false, selectedBugSystemType)" label="Edit"></button>
+				<button type="button" pButton icon="fa-remove" style="float: right"
+					(click)="deleteBugSystemType(selectedBugSystemType)" label="Delete"></button>
+			</div>
+		</footer> 
+	</p-dataTable>
+
+	<p-dialog header="BugSystem Type Details" [(visible)]="displayDialog"
+		[responsive]="true" showEffect="fade" [modal]="true">
+		<form [formGroup]="bugSystemTypeForm">
+			<div
+				class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid type-popup"
+				style="margin: 10px 0px">
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-3">ID:</div>
+					<div class="ui-grid-col-8">
+						<input type="text" formControlName="bugSystemTypeId"
+							[(ngModel)]="bugSystemType.idType" class="form-control"/>
+					</div>
+				</div>
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-3">Name *:</div>
+					<div class="ui-grid-col-8">
+						<input type="text" formControlName="bugSystemTypeName"
+							placeholder="Required" [(ngModel)]="bugSystemType.name"
+							class="form-control" />
+						<div
+							*ngIf="!bugSystemTypeForm.controls['bugSystemTypeName'].valid&&bugSystemTypeForm.controls['bugSystemTypeName'].dirty"
+							class="alert alert-danger">
+							<div *ngIf="bugSystemTypeForm.controls['bugSystemTypeName'].errors['required']">
+								Name is required</div>
+							<div *ngIf="bugSystemTypeForm.controls['bugSystemTypeName'].errors['minlength']">
+								Name must be at least 4 characters long.</div>
+							<div *ngIf="bugSystemTypeForm.controls['bugSystemTypeName'].errors['maxlength']">
+								Name cannot be more than 100 characters long.</div>
+						</div>
+					</div>
+				</div>
+				<footer>
+					<div
+						class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+						<button type="button" pButton icon="fa-check" (click)="save()"
+							label="Save" [disabled]="!bugSystemTypeForm.valid"></button>
+						<button type="button" pButton icon="fa-close"
+							(click)="closeDialog()" label="Cancel"></button>
+					</div>
+				</footer>
+			</div>
+		</form>
+	</p-dialog>
+</div>

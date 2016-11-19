@@ -3,7 +3,7 @@
  * @author eandre
  * 
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { Message, SelectItem } from 'primeng/primeng';
 
@@ -12,7 +12,7 @@ import { UserService } from '../shared/services/user.service';
 import { AlertService } from '../shared/services/alert.service';
 
 // Models
-import { User } from './user'
+import { User } from '../shared/models/user'
 
 @Component({
     moduleId : module.id,
@@ -21,6 +21,9 @@ import { User } from './user'
 })
 
 export class UserComponent implements OnInit {
+    
+  //Events
+    @Output('loadingModal') updateLoadingModal = new EventEmitter(); //Event handled by home.component to show and hide the loading widget
     
     displayDialog : boolean;
     user:User = new User();
@@ -33,31 +36,23 @@ export class UserComponent implements OnInit {
     
     // Columns to be displayed in the table
     cols : any[];
-    
-    // Loading widget display
-    loading = false;
 
     constructor(private userService: UserService, 
             private alertService: AlertService,
             private fb: FormBuilder) { }
 
-    ngOnInit() {
-        // Start the loading widget
-        this.loading = true;
-        
+    ngOnInit() {        
         // Set up validations
         this.userform = this.fb.group({
-            'userId': new FormControl(''),
+            'userId': new FormControl({value: '', disabled: true}),
             'userName': new FormControl('', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(100)])),
             'name': new FormControl('', Validators.compose([Validators.required, Validators.maxLength(100)])),
             'email': new FormControl('', Validators.compose([Validators.required, Validators.maxLength(100)])),
             'password': new FormControl('', Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(100)]))
         });
         
-        this.loadUsers();
-        
         this.cols = [
-                     {field: 'idUser', header: 'ID'},
+                     {field: 'idUser', header: 'ID',  styleClass:'idColumn'},
                      {field: 'userName', header: 'User Name'},
                      {field: 'name', header: 'Name'},
                      {field: 'email', header: 'Email'}
@@ -69,22 +64,28 @@ export class UserComponent implements OnInit {
      * Observable call object
      */
     loadUsers() {
-        return  this.userService.getUsers()
-        .subscribe(
+        let usersObservable = this.userService.getUsers();
+        usersObservable.subscribe(
                 data => {
                     if (data.error) {
                         this.alertService.error(data.error);
-                    } else {            
-                        this.users = data.body;
                     }
-                    // Stop the loading widget
-                    this.loading = false;
                 },
                 error => {
                     this.alertService.error('Failed to load the Users. ' + error);
-                    // Stop the loading widget
-                    this.loading = false;
-                }); 
+                });
+        
+        return usersObservable;
+    }
+    
+    /**
+     * Function used to fill the data in the screen
+     * @param users list of users to load
+     * @param userTypes list of user types
+     */
+    fillData(users, userTypes) {
+        this.users = users;
+        this.userTypes = userTypes;
     }
     
     /**
@@ -133,7 +134,7 @@ export class UserComponent implements OnInit {
      */
     save() {
         // Start the loading widget
-        this.loading = true;
+        this.showLoadingModal();
         
         // Check if it's a new user
         if (this.newUser) {
@@ -152,7 +153,7 @@ export class UserComponent implements OnInit {
                 () => {
                     this.user = new User();
                     // Stop the loading widget
-                    this.loading = false;
+                    this.hideLoadingModal();
                 });
         } else {
             this.userService.updateUser(this.user)
@@ -164,17 +165,17 @@ export class UserComponent implements OnInit {
                         this.users[this.findSelectedUserIndex()] = this.user;
                     }
                     // Stop the loading widget
-                    this.loading = false;
+                    this.hideLoadingModal();
                 },
                 error => {
                     this.alertService.error('Failed to update User. ' + error);
                     // Stop the loading widget
-                    this.loading = false;
+                    this.hideLoadingModal();
                 },
                 () => {
                     this.user = new User();
                     // Stop the loading widget
-                    this.loading = false;
+                    this.hideLoadingModal();
                 });
         }
         
@@ -195,7 +196,7 @@ export class UserComponent implements OnInit {
         }
         
         // Start the loading widget
-        this.loading = true;
+        this.showLoadingModal();
         
         this.userService.deleteUser(this.selectedUser.idUser)
         .subscribe(
@@ -212,7 +213,7 @@ export class UserComponent implements OnInit {
             () => {
                 this.user = null;
                 // Stop the loading widget
-                this.loading = false;
+                this.hideLoadingModal();
             });
     }
     
@@ -241,5 +242,19 @@ export class UserComponent implements OnInit {
             userToUpdate[prop] = user[prop];
         }
         return userToUpdate;
+    }
+    
+    /**
+     * Function used to emit updateLoadingModal event with a request to show the loading modal if it is not showing yet
+     */
+    private showLoadingModal() {
+        this.updateLoadingModal.emit('show');
+    }
+    
+    /**
+     * Function used to emit the updateLoadingModal event with a request to hide the loading modal
+     */
+    private hideLoadingModal() {
+        this.updateLoadingModal.emit('hide');
     }
 }

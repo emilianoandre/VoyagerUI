@@ -1,4 +1,4 @@
-import { UserType } from './user-type';
+import { Type } from './type';
 
 /**
  * User Class
@@ -10,5 +10,5 @@ export class User {
     password: string;
     name: string;
     email: string;
-    userType: UserType;
+    userType: Type;
 }
