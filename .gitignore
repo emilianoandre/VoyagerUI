@@ -8,3 +8,4 @@ node_modules
 /app/app.module.js.map
 /app/app.routing.js
 /app/app.routing.js.map
+*.js
