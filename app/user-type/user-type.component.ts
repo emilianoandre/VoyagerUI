@@ -61,11 +61,7 @@ export class UserTypeComponent implements OnInit {
         let getUserTypesObservable = this.userTypeService.getUserTypes();
         
         getUserTypesObservable.subscribe(
-            data => {
-                if (data.error) {
-                    this.alertService.error(data.error);
-                }
-            },
+            data => { },
             error => {
                 this.alertService.error('Failed to load the User Types. ' + error);
             });

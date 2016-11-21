@@ -16,8 +16,11 @@ import { UserComponent } from '../user/user.component';
 // Models
 import { Type } from '../shared/models/type'
 import { User } from '../shared/models/user'
+import { Permission } from '../shared/models/permission'
 
- 
+// Services
+import { AlertService } from '../shared/services/alert.service';
+
 @Component({
     moduleId: module.id,
     templateUrl: 'home.component.html'
@@ -34,9 +37,13 @@ export class HomeComponent {
     
     // Variables
     userTypes:Array<Type>;
+    bugSystemTypes:Array<Type>;
+    ruleManagerTypes:Array<Type>;
+    permissions:Array<Type>;
     users:Array<User>;
     
-    constructor() {
+    
+    constructor(private alertService: AlertService) {
     }
  
     ngAfterViewInit() {
@@ -56,28 +63,44 @@ export class HomeComponent {
                       
                       // Load User Types
                       if (result[0] && result[0].body) {
+                          this.userTypes = result[0].body;
                           this.userTypeComponent.fillData(result[0].body);
+                      } else if (result[0].error) {
+                          this.alertService.error(result[0].error);
                       }
                       
                       // Load Bug System Types
                       if (result[1] && result[1].body) {
+                          this.bugSystemTypes = result[1].body; 
                           this.bugSystemTypeComponent.fillData(result[1].body);
+                      } else if (result[1].error) {
+                          this.alertService.error(result[1].error);
                       }
                       
                       // Load Rule Manager Types
                       if (result[2] && result[2].body) {
+                          this.ruleManagerTypes = result[2].body; 
                           this.ruleManagerTypeComponent.fillData(result[2].body);
+                      } else if (result[2].error) {
+                          this.alertService.error(result[2].error);
                       }
                       
                       // Load permissions
                       if (result[3] && result[3].body) {
+                          this.permissions = result[3].body;
                           this.permissionComponent.fillData(result[3].body);
+                      } else if (result[3].error) {
+                          this.alertService.error(result[3].error);
                       }
                       
                       // Load Users
                       if (result[4] && result[4].body && result[0] && result[0].body) {
+                          this.users = result[4].body;
                           this.userComponent.fillData(result[4].body, result[0].body);
+                      } else if (result[4].error) {
+                          this.alertService.error(result[4].error);
                       }
+                      
                       this.hideLoadingModal();
                   },
                   error => {

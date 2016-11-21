@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule }    from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DataTableModule, SharedModule, DialogModule, ButtonModule, PanelModule,
-    PasswordModule, TabViewModule } from 'primeng/primeng';
+    PasswordModule, TabViewModule, DropdownModule } from 'primeng/primeng';
 
 // Used to create fake backend
 import { fakeBackendProvider } from './shared/helpers/fake-backend';
@@ -44,7 +44,8 @@ import { AlertService, AuthenticationService, UserService, UserTypeService, BugS
         PanelModule,
         PasswordModule,
         NgbModule.forRoot(),
-        TabViewModule
+        TabViewModule,
+        DropdownModule
     ],
     declarations: [
         AppComponent,

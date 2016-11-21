@@ -60,11 +60,7 @@ export class RuleManagerTypeComponent implements OnInit {
     loadRuleManagerTypes() {
         let ruleManagerTypeObservable = this.ruleManagerTypeService.getRuleManagerTypes();
         ruleManagerTypeObservable.subscribe(
-            data => {
-                if (data.error) {
-                    this.alertService.error(data.error);
-                }
-            },
+            data => { },
             error => {
                 this.alertService.error('Failed to load the Rule Manager Types. ' + error);
             });

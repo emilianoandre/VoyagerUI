@@ -30,6 +30,8 @@ export class UserComponent implements OnInit {
     selectedUser : User;
     newUser : boolean;
     users;
+    userTypes;
+    userTypesList: SelectItem[];
     msgs: Message[] = [];
     userform: FormGroup;    
     submitted: boolean;
@@ -48,13 +50,15 @@ export class UserComponent implements OnInit {
             'userName': new FormControl('', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(100)])),
             'name': new FormControl('', Validators.compose([Validators.required, Validators.maxLength(100)])),
             'email': new FormControl('', Validators.compose([Validators.required, Validators.maxLength(100)])),
-            'password': new FormControl('', Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(100)]))
+            'password': new FormControl('', Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(100)])),
+            'userType': new FormControl('', Validators.required)
         });
         
         this.cols = [
                      {field: 'idUser', header: 'ID',  styleClass:'idColumn'},
                      {field: 'userName', header: 'User Name'},
                      {field: 'name', header: 'Name'},
+                     {field: 'userType.name', header: 'User Type'},
                      {field: 'email', header: 'Email'}
                  ];
     }
@@ -66,11 +70,7 @@ export class UserComponent implements OnInit {
     loadUsers() {
         let usersObservable = this.userService.getUsers();
         usersObservable.subscribe(
-                data => {
-                    if (data.error) {
-                        this.alertService.error(data.error);
-                    }
-                },
+                data => { },
                 error => {
                     this.alertService.error('Failed to load the Users. ' + error);
                 });
@@ -86,6 +86,9 @@ export class UserComponent implements OnInit {
     fillData(users, userTypes) {
         this.users = users;
         this.userTypes = userTypes;
+        this.userTypesList = userTypes.map(function(userType){return {
+            label:userType.name, value:userType};
+        });
     }
     
     /**
@@ -101,7 +104,9 @@ export class UserComponent implements OnInit {
     /**
      * Get the message from the Add/Edit form
      */
-    get diagnostic() { return JSON.stringify(this.userform.value); }
+    get diagnostic() { 
+        return JSON.stringify(this.userform.value);
+    }
     
     /**
      *  Display Add/Edit Dialog

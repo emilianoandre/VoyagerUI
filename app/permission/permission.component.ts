@@ -61,11 +61,7 @@ export class PermissionComponent implements OnInit {
     loadPermissions() {
         let permissionObservable = this.permissionService.getPermissions();
         permissionObservable.subscribe(
-            data => {
-                if (data.error) {
-                    this.alertService.error(data.error);
-                }
-            },
+            data => { },
             error => {
                 this.alertService.error('Failed to load the Permissions. ' + error);
             });

@@ -61,11 +61,7 @@ export class BugSystemTypeComponent implements OnInit {
     loadBugSystemTypes() {
         let bugSystemTypesObservable = this.bugSystemTypeService.getBugSystemTypes();
         bugSystemTypesObservable.subscribe(
-            data => {
-                if (data.error) {
-                    this.alertService.error(data.error);
-                }
-            },
+            data => { },
             error => {
                 this.alertService.error('Failed to load the Bug System Types. ' + error);
             });
