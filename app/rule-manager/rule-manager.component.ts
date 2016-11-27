@@ -1,5 +1,5 @@
 /**
- * User component that holds the user list
+ * RuleManager component that holds the ruleManager list
  * @author eandre
  * 
  */
@@ -8,86 +8,83 @@ import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms'
 import { Message, SelectItem } from 'primeng/primeng';
 
 // Services
-import { UserService } from '../shared/services/user.service';
+import { RuleManagerService } from '../shared/services/rule-manager.service';
 import { AlertService } from '../shared/services/alert.service';
 
 // Models
-import { User } from '../shared/models/user'
+import { RuleManager } from '../shared/models/rule-manager'
 
 @Component({
     moduleId : module.id,
-    selector : 'user-component',
-    templateUrl : 'user.component.html'
+    selector : 'rule-manager-component',
+    templateUrl : 'rule-manager.component.html'
 })
 
-export class UserComponent implements OnInit {
+export class RuleManagerComponent implements OnInit {
     
   //Events
     @Output('loadingModal') updateLoadingModal = new EventEmitter(); //Event handled by home.component to show and hide the loading widget
     
     displayDialog : boolean;
-    user:User = new User();
-    selectedUser : User;
-    newUser : boolean;
-    users;
-    userTypes;
-    userTypesList: SelectItem[];
+    ruleManager:RuleManager = new RuleManager();
+    selectedRuleManager : RuleManager;
+    newRuleManager : boolean;
+    ruleManagers;
+    ruleManagerTypes;
+    ruleManagerTypesList: SelectItem[];
     msgs: Message[] = [];
-    userform: FormGroup;    
+    ruleManagerForm: FormGroup;    
     submitted: boolean;
     
     // Columns to be displayed in the table
     cols : any[];
 
-    constructor(private userService: UserService, 
+    constructor(private ruleManagerService: RuleManagerService, 
             private alertService: AlertService,
             private fb: FormBuilder) { }
 
     ngOnInit() {        
         // Set up validations
-        this.userform = this.fb.group({
-            'userId': new FormControl({value: '', disabled: true}),
-            'userName': new FormControl('', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(100)])),
+        this.ruleManagerForm = this.fb.group({
+            'ruleManagerId': new FormControl({value: '', disabled: true}),
             'name': new FormControl('', Validators.compose([Validators.required, Validators.maxLength(100)])),
-            'email': new FormControl('', Validators.compose([Validators.required, Validators.maxLength(100)])),
-            'password': new FormControl('', Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(100)])),
-            'userType': new FormControl('', Validators.required)
+            'url': new FormControl('', Validators.compose([Validators.required, Validators.maxLength(200)])),
+            'ruleManagerType': new FormControl('', Validators.required)
         });
         
         this.cols = [
-                     {field: 'idUser', header: 'ID',  styleClass:'idColumn'},
-                     {field: 'userName', header: 'User Name'},
+                     {field: 'idRuleManager', header: 'ID',  styleClass:'idColumn'},
                      {field: 'name', header: 'Name'},
-                     {field: 'userType.name', header: 'User Type'},
-                     {field: 'email', header: 'Email'}
+                     {field: 'url', header: 'URL'},
+                     {field: 'ruleManagerType.name', header: 'RuleManager Type'}
                  ];
     }
     
     /**
-     * Returns an observer with the call to load the user types
+     * Returns an observer with the call to load the ruleManager types
      * Observable call object
      */
-    loadUsers() {
-        let usersObservable = this.userService.getUsers();
-        usersObservable.subscribe(
+    loadRuleManagers() {
+        let ruleManagersObservable = this.ruleManagerService.getRuleManagers();
+        ruleManagersObservable.subscribe(
                 data => { },
                 error => {
-                    this.alertService.error('Failed to load the Users. ' + error);
+                    this.alertService.error('Failed to load the RuleManagers. ' + error);
                 });
         
-        return usersObservable;
+        return ruleManagersObservable;
     }
     
     /**
      * Function used to fill the data in the screen
-     * @param users list of users to load
-     * @param userTypes list of user types
+     * @param ruleManagers list of ruleManagers to load
+     * @param ruleManagerTypes list of ruleManager types
      */
-    fillData(users, userTypes) {
-        this.users = users;
-        this.userTypes = userTypes;
-        this.userTypesList = userTypes.map(function(userType){return {
-            label:userType.name, value:userType};
+    fillData(ruleManagers, ruleManagerTypes) {
+        this.ruleManagers = ruleManagers;
+        this.ruleManagerTypes = ruleManagerTypes;
+        this.ruleManagerTypesList = ruleManagerTypes.map(function(ruleManagerType){return {
+            label:ruleManagerType.name, value:ruleManagerType};
         });
     }
     
@@ -95,80 +92,80 @@ export class UserComponent implements OnInit {
      * Get the message from the Add/Edit form
      */
     get diagnostic() { 
-        return JSON.stringify(this.userform.value);
+        return JSON.stringify(this.ruleManagerForm.value);
     }
     
     /**
      *  Display Add/Edit Dialog
      *  @param create: boolean to know if we should display add or edit dialog
-     *  @param selectedUser: selected user
+     *  @param selectedRuleManager: selected ruleManager
      */
-    showDialog(create:boolean, selectedUser:User) {
+    showDialog(create:boolean, selectedRuleManager:RuleManager) {
         
         // Clear Alerts
         this.alertService.clearAlert();
         
         // Check if a row was selected on edit
-        if (!create && !selectedUser) {
+        if (!create && !selectedRuleManager) {
             this.alertService.error('Please select a row');
             return;
         }
         
-        this.newUser = create;
+        this.newRuleManager = create;
         if (create) {
-            this.user = new User();
+            this.ruleManager = new RuleManager();
             this.displayDialog = true;
         } else {        
-            this.user = this.cloneUser(selectedUser);
+            this.ruleManager = this.cloneRuleManager(selectedRuleManager);
         }
         this.displayDialog = true;
     }
     
     /**
-     * Saves a new or old user
+     * Saves a new or updates a ruleManager
      */
     save() {
         // Start the loading widget
         this.showLoadingModal();
         
-        // Check if it's a new user
-        if (this.newUser) {
-            this.userService.createUser(this.user)
+        // Check if it's a new ruleManager
+        if (this.newRuleManager) {
+            this.ruleManagerService.createRuleManager(this.ruleManager)
             .subscribe(
                 data => {
                     if (data.error) {
                         this.alertService.error(data.error);
                     } else {
-                        this.users.push(data.body);
+                        this.ruleManagers.push(data.body);
                     }
                 },
                 error => {
-                    this.alertService.error('Failed to create User. ' + error);
+                    this.alertService.error('Failed to create RuleManager. ' + error);
                 },
                 () => {
-                    this.user = new User();
+                    this.ruleManager = new RuleManager();
                     // Stop the loading widget
                     this.hideLoadingModal();
                 });
         } else {
-            this.userService.updateUser(this.user)
+            this.ruleManagerService.updateRuleManager(this.ruleManager)
             .subscribe(
                 data => {
                     if (data.error) {
                         this.alertService.error(data.error);
                     } else {                
-                        this.users[this.findSelectedUserIndex()] = this.user;
+                        this.ruleManagers[this.findSelectedRuleManagerIndex()] = this.ruleManager;
                     }
                     // Stop the loading widget
                     this.hideLoadingModal();
                 },
                 error => {
-                    this.alertService.error('Failed to update User. ' + error);
+                    this.alertService.error('Failed to update RuleManager. ' + error);
                     // Stop the loading widget
                     this.hideLoadingModal();
                 },
                 () => {
-                    this.user = new User();
+                    this.ruleManager = new RuleManager();
                     // Stop the loading widget
                     this.hideLoadingModal();
                 });
@@ -179,13 +176,13 @@ export class UserComponent implements OnInit {
     }
     
     /**
-     * Deletes a user
-     * @param selectedUser: selected user
+     * Deletes a ruleManager
+     * @param selectedRuleManager: selected ruleManager
      */
-    deleteUser(selectedUser:User) {
+    deleteRuleManager(selectedRuleManager:RuleManager) {
         // Clear Alerts
         this.alertService.clearAlert();
-        if (!selectedUser) {
+        if (!selectedRuleManager) {
             this.alertService.error('Please select a row');
             return;
         }
@@ -193,30 +190,30 @@ export class UserComponent implements OnInit {
         // Start the loading widget
         this.showLoadingModal();
         
-        this.userService.deleteUser(this.selectedUser.idUser)
+        this.ruleManagerService.deleteRuleManager(this.selectedRuleManager.idRuleManager)
         .subscribe(
             data => {
                 if (data && data.error) {
                     this.alertService.error(data.error);
                 } else {            
-                    this.users.splice(this.findSelectedUserIndex(), 1);
+                    this.ruleManagers.splice(this.findSelectedRuleManagerIndex(), 1);
                 }
             },
             error => {
-                this.alertService.error('Failed to delete User. ' + error);                   
+                this.alertService.error('Failed to delete RuleManager. ' + error);                   
             },
             () => {
-                this.user = null;
+                this.ruleManager = null;
                 // Stop the loading widget
                 this.hideLoadingModal();
             });
     }
     
     /**
-     * Returns the selected user by index
+     * Returns the selected ruleManager by index
      */
-    findSelectedUserIndex(): number {
-        return this.users.indexOf(this.selectedUser);
+    findSelectedRuleManagerIndex(): number {
+        return this.ruleManagers.indexOf(this.selectedRuleManager);
     }
     
     /**
@@ -228,15 +225,15 @@ export class UserComponent implements OnInit {
     }
     
     /**
-     * Clones a user
-     * @param user user to clone
+     * Clones a ruleManager
+     * @param ruleManager ruleManager to clone
      */
-    cloneUser(user: User): User {
-        let userToUpdate = new User();
-        for(let prop in user) {
-            userToUpdate[prop] = user[prop];
+    cloneRuleManager(ruleManager: RuleManager): RuleManager {
+        let ruleManagerToUpdate = new RuleManager();
+        for(let prop in ruleManager) {
+            ruleManagerToUpdate[prop] = ruleManager[prop];
         }
-        return userToUpdate;
+        return ruleManagerToUpdate;
     }
     
     /**

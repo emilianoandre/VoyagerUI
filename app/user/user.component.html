@@ -22,7 +22,7 @@
 	</p-dataTable>
 	
 	<p-dialog header="User Type Details" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true" [width]="500">
-		<form [formGroup]="userform" (ngSubmit)="onSubmit(userform.value)">
+		<form [formGroup]="userform">
 			<div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid"
 				style="margin: 10px 0px">
 				<div class="ui-grid-row">

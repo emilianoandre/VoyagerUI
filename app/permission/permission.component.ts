@@ -208,7 +208,7 @@ export class PermissionComponent implements OnInit {
      * Closes the Add/Edit dialog
      */
     closeDialog() {
-     // Close the dialog
+        // Close the dialog
         this.displayDialog = false;
     }
     

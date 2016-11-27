@@ -1,5 +1,5 @@
 /**
- * User Service
+ * Project Service
  * @author eandre
  */
 import { Injectable } from '@angular/core';
@@ -10,48 +10,48 @@ import { Constants } from '../utils/constants';
 import { Utils } from '../utils/utils';
 
 @Injectable()
-export class UserService {
+export class ProjectService {
     
     // Constants
-    private SERVICE_USER = "User/";
-    private METHOD_USER = "user";
-    private METHOD_DELETE_USER = "deleteUser";
+    private SERVICE_USER = "Project/";
+    private METHOD_USER = "project";
+    private METHOD_DELETE_USER = "deleteProject";
     
     constructor(private http: Http) { }
     
     /**
-     * Gets the list of users
+     * Gets the list of projects
      */
-    getUsers() {        
+    getProjects() {        
         // Get Response        
         return this.http.get(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_USER, Utils.getJwt())
         .map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
     }
     
     /**
-     * Creates a user
-     * @param user object to create
+     * Creates a project
+     * @param project object to create
      */
-    createUser(user) {
-        return this.http.post(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_USER, user, Utils.getJwt())
+    createProject(project) {
+        return this.http.post(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_USER, project, Utils.getJwt())
         .map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
     }
     
     /**
-     * Updates a user
-     * @param updated user
+     * Updates a project
+     * @param updated project
      */
-    updateUser(user) {
+    updateProject(project) {
         return this.http.put(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_USER,
-                JSON.stringify(user), Utils.getJwt()).map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
+                JSON.stringify(project), Utils.getJwt()).map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
     }
     
     /**
-     * Deletes a user
-     * @param id of the user
+     * Deletes a project
+     * @param id of the project
      */
-    deleteUser(userId) {
+    deleteProject(projectId) {
         return this.http.put(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_DELETE_USER,
-                userId, Utils.getJwt()).map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
+                projectId, Utils.getJwt()).map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
     }
 }

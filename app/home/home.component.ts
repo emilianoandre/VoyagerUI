@@ -8,7 +8,9 @@ import { Observable } from 'rxjs/Observable';
 
 // Components
 import { UserTypeComponent } from '../user-type/user-type.component';
+import { BugSystemComponent } from '../bug-system/bug-system.component';
 import { BugSystemTypeComponent } from '../bug-system-type/bug-system-type.component';
+import { RuleManagerComponent } from '../rule-manager/rule-manager.component'
 import { RuleManagerTypeComponent } from '../rule-manager-type/rule-manager-type.component'
 import { PermissionComponent } from '../permission/permission.component';
 import { UserComponent } from '../user/user.component';
@@ -16,6 +18,8 @@ import { UserComponent } from '../user/user.component';
 // Models
 import { Type } from '../shared/models/type'
 import { User } from '../shared/models/user'
+import { BugSystem } from '../shared/models/bug-system'
+import { RuleManager } from '../shared/models/rule-manager'
 import { Permission } from '../shared/models/permission'
 
 // Services
@@ -30,7 +34,9 @@ export class HomeComponent {
     
     // Childs
     @ViewChild(UserTypeComponent) userTypeComponent: UserTypeComponent;
+    @ViewChild(BugSystemComponent) bugSystemComponent: BugSystemComponent;
     @ViewChild(BugSystemTypeComponent) bugSystemTypeComponent: BugSystemTypeComponent;
+    @ViewChild(RuleManagerComponent) ruleManagerComponent: RuleManagerComponent;
     @ViewChild(RuleManagerTypeComponent) ruleManagerTypeComponent: RuleManagerTypeComponent;
     @ViewChild(PermissionComponent) permissionComponent: PermissionComponent;
     @ViewChild(UserComponent) userComponent: UserComponent;
@@ -41,6 +47,8 @@ export class HomeComponent {
     ruleManagerTypes:Array<Type>;
     permissions:Array<Type>;
     users:Array<User>;
+    bugSystems:Array<BugSystem>;
+    ruleManagers:Array<RuleManager>;
     
     
     constructor(private alertService: AlertService) {
@@ -53,11 +61,13 @@ export class HomeComponent {
         });
         this.showLoadingModal();
         Observable.forkJoin(
-                this.userTypeComponent.loadUserTypes(),
+                this.userTypeComponent.loadUserTypes(),                
                 this.bugSystemTypeComponent.loadBugSystemTypes(),
                 this.ruleManagerTypeComponent.loadRuleManagerTypes(),
                 this.permissionComponent.loadPermissions(),
-                this.userComponent.loadUsers()
+                this.userComponent.loadUsers(),
+                this.bugSystemComponent.loadBugSystems(),
+                this.ruleManagerComponent.loadRuleManagers()
               ).subscribe(
                   result => {
                       
@@ -99,6 +109,22 @@ export class HomeComponent {
                           this.userComponent.fillData(result[4].body, result[0].body);
                       } else if (result[4].error) {
                           this.alertService.error(result[4].error);
+                      }
+                      
+                      // Load Bug Systems
+                      if (result[5] && result[5].body && result[1] && result[1].body) {
+                          this.bugSystems = result[5].body;
+                          this.bugSystemComponent.fillData(result[5].body, result[1].body);
+                      } else if (result[5].error) {
+                          this.alertService.error(result[5].error);
+                      }
+                      
+                      // Load Rule Managers
+                      if (result[6] && result[6].body && result[2] && result[2].body) {
+                          this.ruleManagers = result[6].body;
+                          this.ruleManagerComponent.fillData(result[6].body, result[2].body);
+                      } else if (result[6].error) {
+                          this.alertService.error(result[6].error);
                       }
                       
                       this.hideLoadingModal();

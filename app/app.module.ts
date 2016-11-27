@@ -19,7 +19,9 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { UserTypeComponent }from './user-type/user-type.component';
 import { UserComponent }from './user/user.component';
+import { BugSystemComponent } from './bug-system/bug-system.component';
 import { BugSystemTypeComponent } from './bug-system-type/bug-system-type.component';
+import { RuleManagerComponent } from './rule-manager/rule-manager.component';
 import { RuleManagerTypeComponent } from './rule-manager-type/rule-manager-type.component';
 import { PermissionComponent } from './permission/permission.component';
 
@@ -28,8 +30,8 @@ import { routing } from './routing/app.routing';
 import { AuthGuard } from './shared/auth/auth.guard';
 
 // Services
-import { AlertService, AuthenticationService, UserService, UserTypeService, BugSystemTypeService, 
-    RuleManagerTypeService, PermissionService } from './shared/services/index';
+import { AlertService, AuthenticationService, UserService, UserTypeService, BugSystemService, BugSystemTypeService, 
+    RuleManagerService, RuleManagerTypeService, PermissionService, ProjectService } from './shared/services/index';
  
 @NgModule({
     imports: [
@@ -55,7 +57,9 @@ import { AlertService, AuthenticationService, UserService, UserTypeService, BugS
         RegisterComponent,
         UserTypeComponent,
         UserComponent,
+        BugSystemComponent,
         BugSystemTypeComponent,
+        RuleManagerComponent,
         RuleManagerTypeComponent,
         PermissionComponent
     ],
@@ -65,9 +69,12 @@ import { AlertService, AuthenticationService, UserService, UserTypeService, BugS
         AuthenticationService,
         UserService,
         UserTypeService,
+        BugSystemService,
         BugSystemTypeService,
+        RuleManagerService,
         RuleManagerTypeService,
-        PermissionService
+        PermissionService,
+        ProjectService
         // providers used to create fake backend
         //fakeBackendProvider,
         //MockBackend,

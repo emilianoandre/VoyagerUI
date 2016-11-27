@@ -1,5 +1,5 @@
 /**
- * User Service
+ * Bug System Service
  * @author eandre
  */
 import { Injectable } from '@angular/core';
@@ -10,48 +10,48 @@ import { Constants } from '../utils/constants';
 import { Utils } from '../utils/utils';
 
 @Injectable()
-export class UserService {
+export class BugSystemService {
     
     // Constants
-    private SERVICE_USER = "User/";
-    private METHOD_USER = "user";
-    private METHOD_DELETE_USER = "deleteUser";
+    private SERVICE_USER = "BugSystem/";
+    private METHOD_USER = "bugSystem";
+    private METHOD_DELETE_USER = "deleteBugSystem";
     
     constructor(private http: Http) { }
     
     /**
-     * Gets the list of users
+     * Gets the list of bugSystems
      */
-    getUsers() {        
+    getBugSystems() {        
         // Get Response        
         return this.http.get(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_USER, Utils.getJwt())
         .map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
     }
     
     /**
-     * Creates a user
-     * @param user object to create
+     * Creates a bugSystem
+     * @param bugSystem object to create
      */
-    createUser(user) {
-        return this.http.post(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_USER, user, Utils.getJwt())
+    createBugSystem(bugSystem) {
+        return this.http.post(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_USER, bugSystem, Utils.getJwt())
         .map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
     }
     
     /**
-     * Updates a user
-     * @param updated user
+     * Updates a bugSystem
+     * @param updated bugSystem
      */
-    updateUser(user) {
+    updateBugSystem(bugSystem) {
         return this.http.put(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_USER,
-                JSON.stringify(user), Utils.getJwt()).map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
+                JSON.stringify(bugSystem), Utils.getJwt()).map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
     }
     
     /**
-     * Deletes a user
-     * @param id of the user
+     * Deletes a bug system
+     * @param id of the bugSystem
      */
-    deleteUser(userId) {
+    deleteBugSystem(bugSystemId) {
         return this.http.put(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_DELETE_USER,
-                userId, Utils.getJwt()).map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
+                bugSystemId, Utils.getJwt()).map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
     }
 }

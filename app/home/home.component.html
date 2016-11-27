@@ -5,6 +5,7 @@
 	</p-tabPanel>
 	<p-tabPanel header="Rule Managers">
 		<div>
+			<rule-manager-component (loadingModal)="updateLoadingModal($event)"></rule-manager-component>
 		</div>
 	</p-tabPanel>
 	<p-tabPanel header="Rule Manager Types" [selected]="true">
@@ -14,6 +15,7 @@
 	</p-tabPanel>
 	<p-tabPanel header="Bug Systems">
 		<div>
+			<bug-system-component (loadingModal)="updateLoadingModal($event)"></bug-system-component>
 		</div>
 	</p-tabPanel>
 	<p-tabPanel header="Bug System Types">
@@ -26,7 +28,7 @@
 	</p-tabPanel>
 	<p-tabPanel header="Users">
 		<div>
-			<user-list (loadingModal)="updateLoadingModal($event)"></user-list>
+			<user-component (loadingModal)="updateLoadingModal($event)"></user-component>
 		</div>
 	</p-tabPanel>
 	<p-tabPanel header="User Types">

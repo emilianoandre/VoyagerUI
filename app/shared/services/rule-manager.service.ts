@@ -1,5 +1,5 @@
 /**
- * User Service
+ * Rule Manager Service
  * @author eandre
  */
 import { Injectable } from '@angular/core';
@@ -10,48 +10,48 @@ import { Constants } from '../utils/constants';
 import { Utils } from '../utils/utils';
 
 @Injectable()
-export class UserService {
+export class RuleManagerService {
     
     // Constants
-    private SERVICE_USER = "User/";
-    private METHOD_USER = "user";
-    private METHOD_DELETE_USER = "deleteUser";
+    private SERVICE_USER = "RuleManager/";
+    private METHOD_USER = "ruleManager";
+    private METHOD_DELETE_USER = "deleteRuleManager";
     
     constructor(private http: Http) { }
     
     /**
-     * Gets the list of users
+     * Gets the list of ruleManagers
      */
-    getUsers() {        
+    getRuleManagers() {        
         // Get Response        
         return this.http.get(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_USER, Utils.getJwt())
         .map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
     }
     
     /**
-     * Creates a user
-     * @param user object to create
+     * Creates a ruleManager
+     * @param ruleManager object to create
      */
-    createUser(user) {
-        return this.http.post(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_USER, user, Utils.getJwt())
+    createRuleManager(ruleManager) {
+        return this.http.post(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_USER, ruleManager, Utils.getJwt())
         .map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
     }
     
     /**
-     * Updates a user
-     * @param updated user
+     * Updates a ruleManager
+     * @param updated ruleManager
      */
-    updateUser(user) {
+    updateRuleManager(ruleManager) {
         return this.http.put(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_USER,
-                JSON.stringify(user), Utils.getJwt()).map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
+                JSON.stringify(ruleManager), Utils.getJwt()).map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
     }
     
     /**
-     * Deletes a user
-     * @param id of the user
+     * Deletes a rule manager
+     * @param id of the ruleManager
      */
-    deleteUser(userId) {
+    deleteRuleManager(ruleManagerId) {
         return this.http.put(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_USER + this.METHOD_DELETE_USER,
-                userId, Utils.getJwt()).map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
+                ruleManagerId, Utils.getJwt()).map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
     }
 }

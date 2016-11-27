@@ -1,5 +1,5 @@
 /**
- * User component that holds the user list
+ * BugSystem component that holds the bugSystem list
  * @author eandre
  * 
  */
@@ -8,86 +8,83 @@ import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms'
 import { Message, SelectItem } from 'primeng/primeng';
 
 // Services
-import { UserService } from '../shared/services/user.service';
+import { BugSystemService } from '../shared/services/bug-system.service';
 import { AlertService } from '../shared/services/alert.service';
 
 // Models
-import { User } from '../shared/models/user'
+import { BugSystem } from '../shared/models/bug-system'
 
 @Component({
     moduleId : module.id,
-    selector : 'user-component',
-    templateUrl : 'user.component.html'
+    selector : 'bug-system-component',
+    templateUrl : 'bug-system.component.html'
 })
 
-export class UserComponent implements OnInit {
+export class BugSystemComponent implements OnInit {
     
   //Events
     @Output('loadingModal') updateLoadingModal = new EventEmitter(); //Event handled by home.component to show and hide the loading widget
     
     displayDialog : boolean;
-    user:User = new User();
-    selectedUser : User;
-    newUser : boolean;
-    users;
-    userTypes;
-    userTypesList: SelectItem[];
+    bugSystem:BugSystem = new BugSystem();
+    selectedBugSystem : BugSystem;
+    newBugSystem : boolean;
+    bugSystems;
+    bugSystemTypes;
+    bugSystemTypesList: SelectItem[];
     msgs: Message[] = [];
-    userform: FormGroup;    
+    bugSystemForm: FormGroup;    
     submitted: boolean;
     
     // Columns to be displayed in the table
     cols : any[];
 
-    constructor(private userService: UserService, 
+    constructor(private bugSystemService: BugSystemService, 
             private alertService: AlertService,
             private fb: FormBuilder) { }
 
     ngOnInit() {        
         // Set up validations
-        this.userform = this.fb.group({
-            'userId': new FormControl({value: '', disabled: true}),
-            'userName': new FormControl('', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(100)])),
+        this.bugSystemForm = this.fb.group({
+            'bugSystemId': new FormControl({value: '', disabled: true}),
             'name': new FormControl('', Validators.compose([Validators.required, Validators.maxLength(100)])),
-            'email': new FormControl('', Validators.compose([Validators.required, Validators.maxLength(100)])),
-            'password': new FormControl('', Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(100)])),
-            'userType': new FormControl('', Validators.required)
+            'url': new FormControl('', Validators.compose([Validators.required, Validators.maxLength(200)])),
+            'bugSystemType': new FormControl('', Validators.required)
         });
         
         this.cols = [
-                     {field: 'idUser', header: 'ID',  styleClass:'idColumn'},
-                     {field: 'userName', header: 'User Name'},
+                     {field: 'idBugSystem', header: 'ID',  styleClass:'idColumn'},
                      {field: 'name', header: 'Name'},
-                     {field: 'userType.name', header: 'User Type'},
-                     {field: 'email', header: 'Email'}
+                     {field: 'url', header: 'URL'},
+                     {field: 'bugSystemType.name', header: 'BugSystem Type'}
                  ];
     }
     
     /**
-     * Returns an observer with the call to load the user types
+     * Returns an observer with the call to load the bugSystem types
      * Observable call object
      */
-    loadUsers() {
-        let usersObservable = this.userService.getUsers();
-        usersObservable.subscribe(
+    loadBugSystems() {
+        let bugSystemsObservable = this.bugSystemService.getBugSystems();
+        bugSystemsObservable.subscribe(
                 data => { },
                 error => {
-                    this.alertService.error('Failed to load the Users. ' + error);
+                    this.alertService.error('Failed to load the BugSystems. ' + error);
                 });
         
-        return usersObservable;
+        return bugSystemsObservable;
     }
     
     /**
      * Function used to fill the data in the screen
-     * @param users list of users to load
-     * @param userTypes list of user types
+     * @param bugSystems list of bugSystems to load
+     * @param bugSystemTypes list of bugSystem types
      */
-    fillData(users, userTypes) {
-        this.users = users;
-        this.userTypes = userTypes;
-        this.userTypesList = userTypes.map(function(userType){return {
-            label:userType.name, value:userType};
+    fillData(bugSystems, bugSystemTypes) {
+        this.bugSystems = bugSystems;
+        this.bugSystemTypes = bugSystemTypes;
+        this.bugSystemTypesList = bugSystemTypes.map(function(bugSystemType){return {
+            label:bugSystemType.name, value:bugSystemType};
         });
     }
     
@@ -95,80 +92,80 @@ export class UserComponent implements OnInit {
      * Get the message from the Add/Edit form
      */
     get diagnostic() { 
-        return JSON.stringify(this.userform.value);
+        return JSON.stringify(this.bugSystemForm.value);
     }
     
     /**
      *  Display Add/Edit Dialog
      *  @param create: boolean to know if we should display add or edit dialog
-     *  @param selectedUser: selected user
+     *  @param selectedBugSystem: selected bugSystem
      */
-    showDialog(create:boolean, selectedUser:User) {
+    showDialog(create:boolean, selectedBugSystem:BugSystem) {
         
         // Clear Alerts
         this.alertService.clearAlert();
         
         // Check if a row was selected on edit
-        if (!create && !selectedUser) {
+        if (!create && !selectedBugSystem) {
             this.alertService.error('Please select a row');
             return;
         }
         
-        this.newUser = create;
+        this.newBugSystem = create;
         if (create) {
-            this.user = new User();
+            this.bugSystem = new BugSystem();
             this.displayDialog = true;
         } else {        
-            this.user = this.cloneUser(selectedUser);
+            this.bugSystem = this.cloneBugSystem(selectedBugSystem);
         }
         this.displayDialog = true;
     }
     
     /**
-     * Saves a new or old user
+     * Saves a new or updates a bugSystem
      */
     save() {
         // Start the loading widget
         this.showLoadingModal();
         
-        // Check if it's a new user
-        if (this.newUser) {
-            this.userService.createUser(this.user)
+        // Check if it's a new bugSystem
+        if (this.newBugSystem) {
+            this.bugSystemService.createBugSystem(this.bugSystem)
             .subscribe(
                 data => {
                     if (data.error) {
                         this.alertService.error(data.error);
                     } else {
-                        this.users.push(data.body);
+                        this.bugSystems.push(data.body);
                     }
                 },
                 error => {
-                    this.alertService.error('Failed to create User. ' + error);
+                    this.alertService.error('Failed to create BugSystem. ' + error);
                 },
                 () => {
-                    this.user = new User();
+                    this.bugSystem = new BugSystem();
                     // Stop the loading widget
                     this.hideLoadingModal();
                 });
         } else {
-            this.userService.updateUser(this.user)
+            this.bugSystemService.updateBugSystem(this.bugSystem)
             .subscribe(
                 data => {
                     if (data.error) {
                         this.alertService.error(data.error);
                     } else {                
-                        this.users[this.findSelectedUserIndex()] = this.user;
+                        this.bugSystems[this.findSelectedBugSystemIndex()] = this.bugSystem;
                     }
                     // Stop the loading widget
                     this.hideLoadingModal();
                 },
                 error => {
-                    this.alertService.error('Failed to update User. ' + error);
+                    this.alertService.error('Failed to update BugSystem. ' + error);
                     // Stop the loading widget
                     this.hideLoadingModal();
                 },
                 () => {
-                    this.user = new User();
+                    this.bugSystem = new BugSystem();
                     // Stop the loading widget
                     this.hideLoadingModal();
                 });
@@ -179,13 +176,13 @@ export class UserComponent implements OnInit {
     }
     
     /**
-     * Deletes a user
-     * @param selectedUser: selected user
+     * Deletes a bugSystem
+     * @param selectedBugSystem: selected bugSystem
      */
-    deleteUser(selectedUser:User) {
+    deleteBugSystem(selectedBugSystem:BugSystem) {
         // Clear Alerts
         this.alertService.clearAlert();
-        if (!selectedUser) {
+        if (!selectedBugSystem) {
             this.alertService.error('Please select a row');
             return;
         }
@@ -193,30 +190,30 @@ export class UserComponent implements OnInit {
         // Start the loading widget
         this.showLoadingModal();
         
-        this.userService.deleteUser(this.selectedUser.idUser)
+        this.bugSystemService.deleteBugSystem(this.selectedBugSystem.idBugSystem)
         .subscribe(
             data => {
                 if (data && data.error) {
                     this.alertService.error(data.error);
                 } else {            
-                    this.users.splice(this.findSelectedUserIndex(), 1);
+                    this.bugSystems.splice(this.findSelectedBugSystemIndex(), 1);
                 }
             },
             error => {
-                this.alertService.error('Failed to delete User. ' + error);                   
+                this.alertService.error('Failed to delete BugSystem. ' + error);                   
             },
             () => {
-                this.user = null;
+                this.bugSystem = null;
                 // Stop the loading widget
                 this.hideLoadingModal();
             });
     }
     
     /**
-     * Returns the selected user by index
+     * Returns the selected bugSystem by index
      */
-    findSelectedUserIndex(): number {
-        return this.users.indexOf(this.selectedUser);
+    findSelectedBugSystemIndex(): number {
+        return this.bugSystems.indexOf(this.selectedBugSystem);
     }
     
     /**
@@ -228,15 +225,15 @@ export class UserComponent implements OnInit {
     }
     
     /**
-     * Clones a user
-     * @param user user to clone
+     * Clones a bugSystem
+     * @param bugSystem bugSystem to clone
      */
-    cloneUser(user: User): User {
-        let userToUpdate = new User();
-        for(let prop in user) {
-            userToUpdate[prop] = user[prop];
+    cloneBugSystem(bugSystem: BugSystem): BugSystem {
+        let bugSystemToUpdate = new BugSystem();
+        for(let prop in bugSystem) {
+            bugSystemToUpdate[prop] = bugSystem[prop];
         }
-        return userToUpdate;
+        return bugSystemToUpdate;
     }
     
     /**
