@@ -30,8 +30,7 @@ export class UserTypeComponent implements OnInit {
     newUserType : boolean;
     userTypes;
     msgs: Message[] = [];
-    userTypeForm: FormGroup;    
-    submitted: boolean;
+    userTypeForm: FormGroup;
     
     // Columns to be displayed in the table
     cols : any[];
@@ -75,13 +74,6 @@ export class UserTypeComponent implements OnInit {
      */
     fillData(userTypes) {
         this.userTypes = userTypes;
-    }
-    
-    /**
-     * Get the message from the Add/Edit form
-     */
-    get diagnostic() { 
-        return JSON.stringify(this.userTypeForm.value);        
     }
     
     /**
@@ -192,6 +184,7 @@ export class UserTypeComponent implements OnInit {
                 this.alertService.error('Failed to delete User Type. ' + error);                   
             },
             () => {
+                this.selectedUserType = null;
                 // Stop the loading widget
                 this.hideLoadingModal();
             });

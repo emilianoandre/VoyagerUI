@@ -30,8 +30,7 @@ export class RuleManagerTypeComponent implements OnInit {
     newRuleManagerType : boolean;
     ruleManagerTypes;
     msgs: Message[] = [];
-    ruleManagerTypeForm: FormGroup;    
-    submitted: boolean;
+    ruleManagerTypeForm: FormGroup;
     
     // Columns to be displayed in the table
     cols : any[];
@@ -74,13 +73,6 @@ export class RuleManagerTypeComponent implements OnInit {
      */
     fillData(ruleManagerTypes) {
         this.ruleManagerTypes = ruleManagerTypes;
-    }
-    
-    /**
-     * Get the message from the Add/Edit form
-     */
-    get diagnostic() { 
-        return JSON.stringify(this.ruleManagerTypeForm.value);        
     }
     
     /**
@@ -191,6 +183,7 @@ export class RuleManagerTypeComponent implements OnInit {
                 this.alertService.error('Failed to delete Rule Manager Type. ' + error);                   
             },
             () => {
+                this.selectedRuleManagerType = null;
                 // Stop the loading widget
                 this.hideLoadingModal();
             });

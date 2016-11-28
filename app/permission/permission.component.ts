@@ -31,8 +31,7 @@ export class PermissionComponent implements OnInit {
     newPermission : boolean;
     permissions;
     msgs: Message[] = [];
-    permissionForm: FormGroup;    
-    submitted: boolean;
+    permissionForm: FormGroup;
     
     // Columns to be displayed in the table
     cols : any[];
@@ -75,13 +74,6 @@ export class PermissionComponent implements OnInit {
      */
     fillData(permissions) {
         this.permissions = permissions;
-    }
-    
-    /**
-     * Get the message from the Add/Edit form
-     */
-    get diagnostic() { 
-        return JSON.stringify(this.permissionForm.value);        
     }
     
     /**
@@ -192,6 +184,7 @@ export class PermissionComponent implements OnInit {
                 this.alertService.error('Failed to delete Permission. ' + error);                   
             },
             () => {
+                this.selectedPermission = null;
                 // Stop the loading widget
                 this.hideLoadingModal();
             });

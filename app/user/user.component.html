@@ -22,7 +22,7 @@
 	</p-dataTable>
 	
 	<p-dialog header="User Type Details" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true" [width]="500">
-		<form [formGroup]="userform">
+		<form [formGroup]="userForm">
 			<div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid"
 				style="margin: 10px 0px">
 				<div class="ui-grid-row">
@@ -37,7 +37,7 @@
 						<input pInputText type="text" formControlName="userName"
 							placeholder="Required" [(ngModel)]="user.userName"  style="width: 66.66%"/>
 						<span class="ui-message ui-messages-error ui-corner-all"
-							*ngIf="!userform.controls['userName'].valid&&userform.controls['userName'].dirty">
+							*ngIf="!userForm.controls['userName'].valid&&userForm.controls['userName'].dirty">
 							<i class="fa fa-close"></i> Required!
 						</span>
 					</div>
@@ -48,7 +48,7 @@
 						<input pInputText type="text" formControlName="name"
 							placeholder="Required" [(ngModel)]="user.name" style="width: 66.66%"/>
 						<span class="ui-message ui-messages-error ui-corner-all"
-							*ngIf="!userform.controls['name'].valid&&userform.controls['name'].dirty">
+							*ngIf="!userForm.controls['name'].valid&&userForm.controls['name'].dirty">
 							<i class="fa fa-close"></i> Required!
 						</span>
 					</div>
@@ -59,7 +59,7 @@
 						<input pInputText type="text" formControlName="email"
 							placeholder="Required" [(ngModel)]="user.email"  style="width: 66.66%"/>
 						<span class="ui-message ui-messages-error ui-corner-all"
-							*ngIf="!userform.controls['email'].valid&&userform.controls['email'].dirty">
+							*ngIf="!userForm.controls['email'].valid&&userForm.controls['email'].dirty">
 							<i class="fa fa-close"></i> Required!
 						</span>
 					</div>
@@ -70,7 +70,7 @@
 						<p-dropdown [options]="userTypesList" formControlName="userType" [(ngModel)]="user.userType" 
 							placeholder="Required" [style]="{'width':'66.66%'}"></p-dropdown>
 						<span class="ui-message ui-messages-error ui-corner-all"
-							*ngIf="!userform.controls['userType'].valid&&userform.controls['userType'].dirty">
+							*ngIf="!userForm.controls['userType'].valid&&userForm.controls['userType'].dirty">
 							<i class="fa fa-close"></i> Required!
 						</span>
 					</div>
@@ -82,14 +82,14 @@
 						<input pPassword type="password" formControlName="password"
 							placeholder="Required" [(ngModel)]="user.password"  style="width: 66.66%"/>
 						<span class="ui-message ui-messages-error ui-corner-all"
-							*ngIf="!userform.controls['password'].valid&&userform.controls['password'].dirty">
+							*ngIf="!userForm.controls['password'].valid&&userForm.controls['password'].dirty">
 							<i class="fa fa-close"></i> Required!
 						</span>
 					</div>
 				</div>
 				<footer>
 			        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-			        	<button type="button" pButton icon="fa-check" (click)="save()" label="Save" [disabled]="!userform.valid"></button>
+			        	<button type="button" pButton icon="fa-check" (click)="save()" label="Save" [disabled]="!userForm.valid"></button>
 			            <button type="button" pButton icon="fa-close" (click)="closeDialog()" label="Cancel"></button>			            
 			        </div>
 		    	</footer>

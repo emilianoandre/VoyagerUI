@@ -33,8 +33,7 @@ export class UserComponent implements OnInit {
     userTypes;
     userTypesList: SelectItem[];
     msgs: Message[] = [];
-    userform: FormGroup;    
-    submitted: boolean;
+    userForm: FormGroup;
     
     // Columns to be displayed in the table
     cols : any[];
@@ -45,7 +44,7 @@ export class UserComponent implements OnInit {
 
     ngOnInit() {        
         // Set up validations
-        this.userform = this.fb.group({
+        this.userForm = this.fb.group({
             'userId': new FormControl({value: '', disabled: true}),
             'userName': new FormControl('', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(100)])),
             'name': new FormControl('', Validators.compose([Validators.required, Validators.maxLength(100)])),
@@ -92,13 +91,6 @@ export class UserComponent implements OnInit {
     }
     
     /**
-     * Get the message from the Add/Edit form
-     */
-    get diagnostic() { 
-        return JSON.stringify(this.userform.value);
-    }
-    
-    /**
      *  Display Add/Edit Dialog
      *  @param create: boolean to know if we should display add or edit dialog
      *  @param selectedUser: selected user
@@ -107,6 +99,7 @@ export class UserComponent implements OnInit {
         
         // Clear Alerts
         this.alertService.clearAlert();
+        this.userForm.markAsPristine(false);
         
         // Check if a row was selected on edit
         if (!create && !selectedUser) {
@@ -116,7 +109,10 @@ export class UserComponent implements OnInit {
         
         this.newUser = create;
         if (create) {
+            // Set the default values
             this.user = new User();
+            this.user.userType = this.userTypes[0];
+            
             this.displayDialog = true;
         } else {        
             this.user = this.cloneUser(selectedUser);
@@ -146,7 +142,6 @@ export class UserComponent implements OnInit {
                     this.alertService.error('Failed to create User. ' + error);
                 },
                 () => {
-                    this.user = new User();
                     // Stop the loading widget
                     this.hideLoadingModal();
                 });
@@ -168,7 +163,6 @@ export class UserComponent implements OnInit {
                     this.hideLoadingModal();
                 },
                 () => {
-                    this.user = new User();
                     // Stop the loading widget
                     this.hideLoadingModal();
                 });
@@ -206,7 +200,7 @@ export class UserComponent implements OnInit {
                 this.alertService.error('Failed to delete User. ' + error);                   
             },
             () => {
-                this.user = null;
+                this.selectedUser = null;
                 // Stop the loading widget
                 this.hideLoadingModal();
             });

@@ -1,6 +1,7 @@
 <p-tabView>
 	<p-tabPanel header="Projects">
-		<div>
+		<div>			
+			<project-component (loadingModal)="updateLoadingModal($event)"></project-component>
 		</div>
 	</p-tabPanel>
 	<p-tabPanel header="Rule Managers">

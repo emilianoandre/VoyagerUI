@@ -24,6 +24,7 @@ import { BugSystemTypeComponent } from './bug-system-type/bug-system-type.compon
 import { RuleManagerComponent } from './rule-manager/rule-manager.component';
 import { RuleManagerTypeComponent } from './rule-manager-type/rule-manager-type.component';
 import { PermissionComponent } from './permission/permission.component';
+import { ProjectComponent } from './project/project.component';
 
 // Utils
 import { routing } from './routing/app.routing';
@@ -61,7 +62,8 @@ import { AlertService, AuthenticationService, UserService, UserTypeService, BugS
         BugSystemTypeComponent,
         RuleManagerComponent,
         RuleManagerTypeComponent,
-        PermissionComponent
+        PermissionComponent,
+        ProjectComponent
     ],
     providers: [
         AuthGuard,

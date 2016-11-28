@@ -33,8 +33,7 @@ export class RuleManagerComponent implements OnInit {
     ruleManagerTypes;
     ruleManagerTypesList: SelectItem[];
     msgs: Message[] = [];
-    ruleManagerForm: FormGroup;    
-    submitted: boolean;
+    ruleManagerForm: FormGroup;
     
     // Columns to be displayed in the table
     cols : any[];
@@ -89,13 +88,6 @@ export class RuleManagerComponent implements OnInit {
     }
     
     /**
-     * Get the message from the Add/Edit form
-     */
-    get diagnostic() { 
-        return JSON.stringify(this.ruleManagerForm.value);
-    }
-    
-    /**
      *  Display Add/Edit Dialog
      *  @param create: boolean to know if we should display add or edit dialog
      *  @param selectedRuleManager: selected ruleManager
@@ -104,6 +96,7 @@ export class RuleManagerComponent implements OnInit {
         
         // Clear Alerts
         this.alertService.clearAlert();
+        this.ruleManagerForm.markAsPristine(false);
         
         // Check if a row was selected on edit
         if (!create && !selectedRuleManager) {
@@ -113,7 +106,10 @@ export class RuleManagerComponent implements OnInit {
         
         this.newRuleManager = create;
         if (create) {
+            // Set the default values
             this.ruleManager = new RuleManager();
+            this.ruleManager.ruleManagerType = this.ruleManagerTypes[0];
+            
             this.displayDialog = true;
         } else {        
             this.ruleManager = this.cloneRuleManager(selectedRuleManager);
@@ -143,7 +139,6 @@ export class RuleManagerComponent implements OnInit {
                     this.alertService.error('Failed to create RuleManager. ' + error);
                 },
                 () => {
-                    this.ruleManager = new RuleManager();
                     // Stop the loading widget
                     this.hideLoadingModal();
                 });
@@ -165,7 +160,6 @@ export class RuleManagerComponent implements OnInit {
                     this.hideLoadingModal();
                 },
                 () => {
-                    this.ruleManager = new RuleManager();
                     // Stop the loading widget
                     this.hideLoadingModal();
                 });
@@ -203,7 +197,7 @@ export class RuleManagerComponent implements OnInit {
                 this.alertService.error('Failed to delete RuleManager. ' + error);                   
             },
             () => {
-                this.ruleManager = null;
+                this.selectedRuleManager = null;
                 // Stop the loading widget
                 this.hideLoadingModal();
             });

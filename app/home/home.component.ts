@@ -14,6 +14,7 @@ import { RuleManagerComponent } from '../rule-manager/rule-manager.component'
 import { RuleManagerTypeComponent } from '../rule-manager-type/rule-manager-type.component'
 import { PermissionComponent } from '../permission/permission.component';
 import { UserComponent } from '../user/user.component';
+import { ProjectComponent } from '../project/project.component';
 
 // Models
 import { Type } from '../shared/models/type'
@@ -21,6 +22,7 @@ import { User } from '../shared/models/user'
 import { BugSystem } from '../shared/models/bug-system'
 import { RuleManager } from '../shared/models/rule-manager'
 import { Permission } from '../shared/models/permission'
+import { Project } from '../shared/models/project'
 
 // Services
 import { AlertService } from '../shared/services/alert.service';
@@ -40,6 +42,7 @@ export class HomeComponent {
     @ViewChild(RuleManagerTypeComponent) ruleManagerTypeComponent: RuleManagerTypeComponent;
     @ViewChild(PermissionComponent) permissionComponent: PermissionComponent;
     @ViewChild(UserComponent) userComponent: UserComponent;
+    @ViewChild(ProjectComponent) projectComponent: ProjectComponent;
     
     // Variables
     userTypes:Array<Type>;
@@ -49,7 +52,7 @@ export class HomeComponent {
     users:Array<User>;
     bugSystems:Array<BugSystem>;
     ruleManagers:Array<RuleManager>;
-    
+    projects:Array<Project>;    
     
     constructor(private alertService: AlertService) {
     }
@@ -67,7 +70,8 @@ export class HomeComponent {
                 this.permissionComponent.loadPermissions(),
                 this.userComponent.loadUsers(),
                 this.bugSystemComponent.loadBugSystems(),
-                this.ruleManagerComponent.loadRuleManagers()
+                this.ruleManagerComponent.loadRuleManagers(),
+                this.projectComponent.loadProjects()
               ).subscribe(
                   result => {
                       
@@ -125,6 +129,15 @@ export class HomeComponent {
                           this.ruleManagerComponent.fillData(result[6].body, result[2].body);
                       } else if (result[6].error) {
                           this.alertService.error(result[6].error);
+                      }
+                      
+                      // Load Projects
+                      if (result[7] && result[7].body && result[6] && result[6].body
+                              && result[5] && result[5].body) {
+                          this.projects = result[7].body;
+                          this.projectComponent.fillData(result[7].body, result[6].body, result[5].body);
+                      } else if (result[7].error) {
+                          this.alertService.error(result[7].error);
                       }
                       
                       this.hideLoadingModal();

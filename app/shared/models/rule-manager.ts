@@ -8,5 +8,5 @@ export class RuleManager {
     idRuleManager : number;
     name: string;
     url: string;
-    ruleManagermType: Type;
+    ruleManagerType: Type;
 }

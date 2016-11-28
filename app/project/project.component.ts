@@ -1,5 +1,5 @@
 /**
- * BugSystem component that holds the bugSystem list
+ * Project component that holds the project list
  * @author eandre
  * 
  */
@@ -8,153 +8,161 @@ import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms'
 import { Message, SelectItem } from 'primeng/primeng';
 
 // Services
-import { BugSystemService } from '../shared/services/bug-system.service';
+import { ProjectService } from '../shared/services/project.service';
 import { AlertService } from '../shared/services/alert.service';
 
 // Models
-import { BugSystem } from '../shared/models/bug-system'
+import { Project } from '../shared/models/project'
 
 @Component({
     moduleId : module.id,
-    selector : 'bug-system-component',
-    templateUrl : 'bug-system.component.html'
+    selector : 'project-component',
+    templateUrl : 'project.component.html'
 })
 
-export class BugSystemComponent implements OnInit {
+export class ProjectComponent implements OnInit {
     
   //Events
     @Output('loadingModal') updateLoadingModal = new EventEmitter(); //Event handled by home.component to show and hide the loading widget
     
     displayDialog : boolean;
-    bugSystem:BugSystem = new BugSystem();
-    selectedBugSystem : BugSystem;
-    newBugSystem : boolean;
+    project:Project = new Project();
+    selectedProject : Project;
+    newProject : boolean;
+    projects;
+    ruleManagers;
     bugSystems;
-    bugSystemTypes;
-    bugSystemTypesList: SelectItem[];
+    ruleManagersList: SelectItem[];
+    bugSystemsList: SelectItem[];
     msgs: Message[] = [];
-    bugSystemForm: FormGroup;
+    projectForm: FormGroup;
     
     // Columns to be displayed in the table
     cols : any[];
 
-    constructor(private bugSystemService: BugSystemService, 
+    constructor(private projectService: ProjectService, 
             private alertService: AlertService,
             private fb: FormBuilder) { }
 
     ngOnInit() {        
         // Set up validations
-        this.bugSystemForm = this.fb.group({
-            'bugSystemId': new FormControl({value: '', disabled: true}),
+        this.projectForm = this.fb.group({
+            'projectId': new FormControl({value: '', disabled: true}),
             'name': new FormControl('', Validators.compose([Validators.required, Validators.maxLength(100)])),
-            'url': new FormControl('', Validators.compose([Validators.required, Validators.maxLength(200)])),
-            'bugSystemType': new FormControl('', Validators.required)
+            'ruleManager': new FormControl('', Validators.required),
+            'bugSystem': new FormControl('', Validators.required)
         });
         
         this.cols = [
-                     {field: 'idBugSystem', header: 'ID',  styleClass:'idColumn'},
+                     {field: 'idProject', header: 'ID',  styleClass:'idColumn'},
                      {field: 'name', header: 'Name'},
-                     {field: 'url', header: 'URL'},
-                     {field: 'bugSystemType.name', header: 'BugSystem Type'}
+                     {field: 'ruleManager.name', header: 'Rule Manager'},
+                     {field: 'bugSystem.name', header: 'Bug System'}
                  ];
     }
     
     /**
-     * Returns an observer with the call to load the bugSystem types
+     * Returns an observer with the call to load the project types
      * Observable call object
      */
-    loadBugSystems() {
-        let bugSystemsObservable = this.bugSystemService.getBugSystems();
-        bugSystemsObservable.subscribe(
+    loadProjects() {
+        let projectsObservable = this.projectService.getProjects();
+        projectsObservable.subscribe(
                 data => { },
                 error => {
-                    this.alertService.error('Failed to load the BugSystems. ' + error);
+                    this.alertService.error('Failed to load the Projects. ' + error);
                 });
         
-        return bugSystemsObservable;
+        return projectsObservable;
     }
     
     /**
      * Function used to fill the data in the screen
-     * @param bugSystems list of bugSystems to load
-     * @param bugSystemTypes list of bugSystem types
+     * @param projects list of projects to load
+     * @param ruleManagers list of rule managers
+     * @param bugSystems list of bug systems
      */
-    fillData(bugSystems, bugSystemTypes) {
+    fillData(projects, ruleManagers, bugSystems) {
+        this.projects = projects;
+        this.ruleManagers = ruleManagers;
         this.bugSystems = bugSystems;
-        this.bugSystemTypes = bugSystemTypes;
-        this.bugSystemTypesList = bugSystemTypes.map(function(bugSystemType){return {
-            label:bugSystemType.name, value:bugSystemType};
+        this.ruleManagersList = ruleManagers.map(function(ruleManager){return {
+            label:ruleManager.name, value:ruleManager};
+        });
+        this.bugSystemsList = bugSystems.map(function(bugSystem){return {
+            label:bugSystem.name, value:bugSystem};
         });
     }
     
     /**
      *  Display Add/Edit Dialog
      *  @param create: boolean to know if we should display add or edit dialog
-     *  @param selectedBugSystem: selected bugSystem
+     *  @param selectedProject: selected project
      */
-    showDialog(create:boolean, selectedBugSystem:BugSystem) {
+    showDialog(create:boolean, selectedProject:Project) {
         
         // Clear Alerts
         this.alertService.clearAlert();
-        this.bugSystemForm.markAsPristine(false);
+        this.projectForm.markAsPristine(false);
         
         // Check if a row was selected on edit
-        if (!create && !selectedBugSystem) {
+        if (!create && !selectedProject) {
             this.alertService.error('Please select a row');
             return;
         }
         
-        this.newBugSystem = create;
+        this.newProject = create;
         if (create) {
             // Set the default values
-            this.bugSystem = new BugSystem();
-            this.bugSystem.bugSystemType = this.bugSystemTypes[0];
+            this.project = new Project();
+            this.project.bugSystem = this.bugSystems[0];
+            this.project.ruleManager = this.ruleManagers[0];
             this.displayDialog = true;
         } else {        
-            this.bugSystem = this.cloneBugSystem(selectedBugSystem);
+            this.project = this.cloneProject(selectedProject);
         }
         this.displayDialog = true;
     }
     
     /**
-     * Saves a new or updates a bugSystem
+     * Saves a new or updates a project
      */
     save() {
         // Start the loading widget
         this.showLoadingModal();
         
-        // Check if it's a new bugSystem
-        if (this.newBugSystem) {
-            this.bugSystemService.createBugSystem(this.bugSystem)
+        // Check if it's a new project
+        if (this.newProject) {
+            this.projectService.createProject(this.project)
             .subscribe(
                 data => {
                     if (data.error) {
                         this.alertService.error(data.error);
                     } else {
-                        this.bugSystems.push(data.body);
+                        this.projects.push(data.body);
                     }
                 },
                 error => {
-                    this.alertService.error('Failed to create BugSystem. ' + error);
+                    this.alertService.error('Failed to create Project. ' + error);
                 },
                 () => {
                     // Stop the loading widget
                     this.hideLoadingModal();
                 });
         } else {
-            this.bugSystemService.updateBugSystem(this.bugSystem)
+            this.projectService.updateProject(this.project)
             .subscribe(
                 data => {
                     if (data.error) {
                         this.alertService.error(data.error);
                     } else {                
-                        this.bugSystems[this.findSelectedBugSystemIndex()] = this.bugSystem;
+                        this.projects[this.findSelectedProjectIndex()] = this.project;
                     }
                     // Stop the loading widget
                     this.hideLoadingModal();
                 },
                 error => {
-                    this.alertService.error('Failed to update BugSystem. ' + error);
+                    this.alertService.error('Failed to update Project. ' + error);
                     // Stop the loading widget
                     this.hideLoadingModal();
                 },
@@ -169,13 +177,13 @@ export class BugSystemComponent implements OnInit {
     }
     
     /**
-     * Deletes a bugSystem
-     * @param selectedBugSystem: selected bugSystem
+     * Deletes a project
+     * @param selectedProject: selected project
      */
-    deleteBugSystem(selectedBugSystem:BugSystem) {
+    deleteProject(selectedProject:Project) {
         // Clear Alerts
         this.alertService.clearAlert();
-        if (!selectedBugSystem) {
+        if (!selectedProject) {
             this.alertService.error('Please select a row');
             return;
         }
@@ -183,30 +191,30 @@ export class BugSystemComponent implements OnInit {
         // Start the loading widget
         this.showLoadingModal();
         
-        this.bugSystemService.deleteBugSystem(this.selectedBugSystem.idBugSystem)
+        this.projectService.deleteProject(this.selectedProject.idProject)
         .subscribe(
             data => {
                 if (data && data.error) {
                     this.alertService.error(data.error);
                 } else {            
-                    this.bugSystems.splice(this.findSelectedBugSystemIndex(), 1);
+                    this.projects.splice(this.findSelectedProjectIndex(), 1);
                 }
             },
             error => {
-                this.alertService.error('Failed to delete BugSystem. ' + error);                   
+                this.alertService.error('Failed to delete Project. ' + error);                   
             },
             () => {
-                this.selectedBugSystem = null;
+                this.selectedProject = null;
                 // Stop the loading widget
                 this.hideLoadingModal();
             });
     }
     
     /**
-     * Returns the selected bugSystem by index
+     * Returns the selected project by index
      */
-    findSelectedBugSystemIndex(): number {
-        return this.bugSystems.indexOf(this.selectedBugSystem);
+    findSelectedProjectIndex(): number {
+        return this.projects.indexOf(this.selectedProject);
     }
     
     /**
@@ -218,15 +226,15 @@ export class BugSystemComponent implements OnInit {
     }
     
     /**
-     * Clones a bugSystem
-     * @param bugSystem bugSystem to clone
+     * Clones a project
+     * @param project project to clone
      */
-    cloneBugSystem(bugSystem: BugSystem): BugSystem {
-        let bugSystemToUpdate = new BugSystem();
-        for(let prop in bugSystem) {
-            bugSystemToUpdate[prop] = bugSystem[prop];
+    cloneProject(project: Project): Project {
+        let projectToUpdate = new Project();
+        for(let prop in project) {
+            projectToUpdate[prop] = project[prop];
         }
-        return bugSystemToUpdate;
+        return projectToUpdate;
     }
     
     /**

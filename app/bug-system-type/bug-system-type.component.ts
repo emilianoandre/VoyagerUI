@@ -31,8 +31,7 @@ export class BugSystemTypeComponent implements OnInit {
     newBugSystemType : boolean;
     bugSystemTypes;
     msgs: Message[] = [];
-    bugSystemTypeForm: FormGroup;    
-    submitted: boolean;
+    bugSystemTypeForm: FormGroup;
     
     // Columns to be displayed in the table
     cols : any[];
@@ -75,13 +74,6 @@ export class BugSystemTypeComponent implements OnInit {
      */
     fillData(bugSystemTypes) {
         this.bugSystemTypes = bugSystemTypes;
-    }
-    
-    /**
-     * Get the message from the Add/Edit form
-     */
-    get diagnostic() { 
-        return JSON.stringify(this.bugSystemTypeForm.value);        
     }
     
     /**
@@ -192,6 +184,7 @@ export class BugSystemTypeComponent implements OnInit {
                 this.alertService.error('Failed to delete Bug System Type. ' + error);                   
             },
             () => {
+                this.selectedBugSystemType = null;
                 // Stop the loading widget
                 this.hideLoadingModal();
             });
