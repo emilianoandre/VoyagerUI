@@ -6,25 +6,22 @@
 	</p-tabPanel>
 	<p-tabPanel header="Rule Managers">
 		<div>
-			<rule-manager-component (loadingModal)="updateLoadingModal($event)"></rule-manager-component>
+			<rule-manager-component (loadingModal)="updateLoadingModal($event)" (updateData)="updateRuleManagers($event)"></rule-manager-component>
 		</div>
 	</p-tabPanel>
 	<p-tabPanel header="Rule Manager Types" [selected]="true">
 		<div>
-			<rule-manager-type-component (loadingModal)="updateLoadingModal($event)"></rule-manager-type-component>
+			<rule-manager-type-component (loadingModal)="updateLoadingModal($event)" (updateData)="updateRuleManagerTypes($event)"></rule-manager-type-component>
 		</div>
 	</p-tabPanel>
 	<p-tabPanel header="Bug Systems">
 		<div>
-			<bug-system-component (loadingModal)="updateLoadingModal($event)"></bug-system-component>
+			<bug-system-component (loadingModal)="updateLoadingModal($event)" (updateData)="updateBugSystems($event)"></bug-system-component>
 		</div>
 	</p-tabPanel>
 	<p-tabPanel header="Bug System Types">
 		<div>
-			<bug-system-type-component (loadingModal)="updateLoadingModal($event)"></bug-system-type-component>
-			<p>
-				<a [routerLink]="['/login']">Logout</a>
-			</p>
+			<bug-system-type-component (loadingModal)="updateLoadingModal($event)" (updateData)="updateBugSystemTypes($event)"></bug-system-type-component>
 		</div>
 	</p-tabPanel>
 	<p-tabPanel header="Users">
@@ -34,7 +31,7 @@
 	</p-tabPanel>
 	<p-tabPanel header="User Types">
 		<div>
-			<user-type-component (loadingModal)="updateLoadingModal($event)"></user-type-component>
+			<user-type-component (loadingModal)="updateLoadingModal($event)" (updateData)="updateUserTypes($event)"></user-type-component>
 		</div>
 	</p-tabPanel>
 	<p-tabPanel header="Permissions">

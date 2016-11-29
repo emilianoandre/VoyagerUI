@@ -149,16 +149,60 @@ export class HomeComponent {
     }
     
     /**
+     * Function used to update the user form data when the user types are updated
+     * @param updated user types list
+     */
+    private updateUserTypes(userTypes) {
+        this.userTypes = userTypes;
+        this.userComponent.fillUserTypes(this.userTypes);
+    }
+    
+    /**
+     * Function used to update the bug system form data when the bug system types are updated
+     * @param updated bug system types list
+     */
+    private updateBugSystemTypes(bugSystemTypes) {
+        this.bugSystemTypes = bugSystemTypes;
+        this.bugSystemComponent.fillBugSystemTypes(bugSystemTypes);
+    }
+    
+    /**
+     * Function used to update the rule manager form data when the rule manager types are updated
+     * @param updated rule manager types list
+     */
+    private updateRuleManagerTypes(ruleManagerTypes) {
+        this.ruleManagerTypes = ruleManagerTypes;
+        this.ruleManagerComponent.fillRuleManagerTypes(ruleManagerTypes);
+    }
+    
+    /**
+     * Function used to update the project form data when the rule managers are updated
+     * @param updated rule managers list
+     */
+    private updateRuleManagers(ruleManagers) {
+        this.ruleManagers = ruleManagers;
+        this.projectComponent.fillRuleManagers(ruleManagers);
+    }
+    
+    /**
+     * Function used to update the project form data when the bug systems are updated
+     * @param updated bug systems list
+     */
+    private updateBugSystems(bugSystems) {
+        this.bugSystems = bugSystems;
+        this.projectComponent.fillBugSystems(bugSystems);
+    }
+    
+    /**
      * Function used to handle the requests of the child tabs to update the loading model
-     * After receiving the request, the decision is taken whether to fire the update event to the app.component class with a request to show or hide
-     * the loading modal.
      * @param request show or hide
      */
     private updateLoadingModal(request) {
-        if (request == "show")
+        if (request == "show") {
             this.showLoadingModal();
-        else
+        } else {
             this.hideLoadingModal();
+        }
     }
     
     /**

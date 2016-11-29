@@ -24,6 +24,7 @@ export class RuleManagerComponent implements OnInit {
     
   //Events
     @Output('loadingModal') updateLoadingModal = new EventEmitter(); //Event handled by home.component to show and hide the loading widget
+    @Output('updateData') updateData = new EventEmitter(); //Event handled by home.component to update data in other tabs
     
     displayDialog : boolean;
     ruleManager:RuleManager = new RuleManager();
@@ -81,6 +82,14 @@ export class RuleManagerComponent implements OnInit {
      */
     fillData(ruleManagers, ruleManagerTypes) {
         this.ruleManagers = ruleManagers;
+        this.fillRuleManagerTypes(ruleManagerTypes);
+    }
+    
+    /**
+     * Function used to fill the rule manager types
+     * @param ruleManagers list of rule manager types
+     */
+    fillRuleManagerTypes (ruleManagerTypes) {
         this.ruleManagerTypes = ruleManagerTypes;
         this.ruleManagerTypesList = ruleManagerTypes.map(function(ruleManagerType){return {
             label:ruleManagerType.name, value:ruleManagerType};
@@ -133,6 +142,7 @@ export class RuleManagerComponent implements OnInit {
                         this.alertService.error(data.error);
                     } else {
                         this.ruleManagers.push(data.body);
+                        this.updateRuleManagers();
                     }
                 },
                 error => {
@@ -150,6 +160,7 @@ export class RuleManagerComponent implements OnInit {
                         this.alertService.error(data.error);
                     } else {                
                         this.ruleManagers[this.findSelectedRuleManagerIndex()] = this.ruleManager;
+                        this.updateRuleManagers();
                     }
                     // Stop the loading widget
                     this.hideLoadingModal();
@@ -191,6 +202,7 @@ export class RuleManagerComponent implements OnInit {
                     this.alertService.error(data.error);
                 } else {            
                     this.ruleManagers.splice(this.findSelectedRuleManagerIndex(), 1);
+                    this.updateRuleManagers();
                 }
             },
             error => {
@@ -228,6 +240,13 @@ export class RuleManagerComponent implements OnInit {
             ruleManagerToUpdate[prop] = ruleManager[prop];
         }
         return ruleManagerToUpdate;
+    }
+    
+    /**
+     * Function used to update other forms data with the changes to rule managers
+     */
+    private updateRuleManagers() {
+        this.updateData.emit(this.ruleManagers);
     }
     
     /**

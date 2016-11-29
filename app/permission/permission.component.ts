@@ -44,7 +44,7 @@ export class PermissionComponent implements OnInit {
         // Set up validations
         this.permissionForm = this.formBuilder.group({
             'permissionId': new FormControl({value: '', disabled: true}),
-            'permissionName': new FormControl('', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(100)]))
+            'permissionName': new FormControl('', Validators.compose([Validators.required, Validators.maxLength(100)]))
         });
         
         this.cols = [

@@ -24,6 +24,7 @@ export class BugSystemTypeComponent implements OnInit {
     
     //Events
     @Output('loadingModal') updateLoadingModal = new EventEmitter(); //Event handled by home.component to show and hide the loading widget
+    @Output('updateData') updateData = new EventEmitter(); //Event handled by home.component to update data in other tabs
     
     displayDialog : boolean;
     bugSystemType:Type = new Type();
@@ -44,7 +45,7 @@ export class BugSystemTypeComponent implements OnInit {
         // Set up validations
         this.bugSystemTypeForm = this.formBuilder.group({
             'bugSystemTypeId': new FormControl({value: '', disabled: true}),
-            'bugSystemTypeName': new FormControl('', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(100)]))
+            'bugSystemTypeName': new FormControl('', Validators.compose([Validators.required, Validators.maxLength(100)]))
         });
         
         this.cols = [
@@ -122,6 +123,7 @@ export class BugSystemTypeComponent implements OnInit {
                         this.alertService.error(data.error);
                     } else {
                         this.bugSystemTypes.push(data.body);
+                        this.updateBugSystemTypes();
                     }
                 },
                 error => {
@@ -139,6 +141,7 @@ export class BugSystemTypeComponent implements OnInit {
                         this.alertService.error(data.error);
                     } else {                
                         this.bugSystemTypes[this.findSelectedBugSystemTypeIndex()] = this.bugSystemType;
+                        this.updateBugSystemTypes();
                     }
                     // Stop the loading widget
                     this.hideLoadingModal();
@@ -178,6 +181,7 @@ export class BugSystemTypeComponent implements OnInit {
                     this.alertService.error(data.error);
                 } else {
                     this.bugSystemTypes.splice(this.findSelectedBugSystemTypeIndex(), 1);
+                    this.updateBugSystemTypes();
                 }
             },
             error => {
@@ -215,6 +219,13 @@ export class BugSystemTypeComponent implements OnInit {
             bugSystemTypeToUpdate[prop] = bugSystemType[prop];
         }
         return bugSystemTypeToUpdate;
+    }
+    
+    /**
+     * Function used to update other forms data with the changes to bug system types
+     */
+    private updateBugSystemTypes() {
+        this.updateData.emit(this.bugSystemTypes);
     }
     
     /**

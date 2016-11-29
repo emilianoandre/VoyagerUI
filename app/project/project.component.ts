@@ -84,13 +84,29 @@ export class ProjectComponent implements OnInit {
      */
     fillData(projects, ruleManagers, bugSystems) {
         this.projects = projects;
-        this.ruleManagers = ruleManagers;
+        this.fillBugSystems(bugSystems);
+        this.fillRuleManagers(ruleManagers);
+    }
+    
+    /**
+     * Function used to fill the bug systems
+     * @param bugSystems list of bug systems
+     */
+    fillBugSystems (bugSystems) {
         this.bugSystems = bugSystems;
-        this.ruleManagersList = ruleManagers.map(function(ruleManager){return {
-            label:ruleManager.name, value:ruleManager};
-        });
         this.bugSystemsList = bugSystems.map(function(bugSystem){return {
             label:bugSystem.name, value:bugSystem};
+        });
+    }
+    
+    /**
+     * Function used to fill the rule managers
+     * @param ruleManagers list of rule managers
+     */
+    fillRuleManagers (ruleManagers) {
+        this.ruleManagers = ruleManagers;
+        this.ruleManagersList = ruleManagers.map(function(ruleManager){return {
+            label:ruleManager.name, value:ruleManager};
         });
     }
     

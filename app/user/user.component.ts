@@ -84,6 +84,15 @@ export class UserComponent implements OnInit {
      */
     fillData(users, userTypes) {
         this.users = users;
+        this.fillUserTypes(userTypes);
+        
+    }
+    
+    /**
+     * Function used to fill the user types
+     * @param userTypes list of user types
+     */
+    fillUserTypes (userTypes) {
         this.userTypes = userTypes;
         this.userTypesList = userTypes.map(function(userType){return {
             label:userType.name, value:userType};

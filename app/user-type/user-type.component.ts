@@ -23,6 +23,7 @@ import { Type } from '../shared/models/type';
 export class UserTypeComponent implements OnInit {
     //Events
     @Output('loadingModal') updateLoadingModal = new EventEmitter(); //Event handled by home.component to show and hide the loading widget
+    @Output('updateData') updateData = new EventEmitter(); //Event handled by home.component to update data in other tabs
     
     displayDialog : boolean;
     userType:Type = new Type();
@@ -43,7 +44,7 @@ export class UserTypeComponent implements OnInit {
         // Set up validations
         this.userTypeForm = this.formBuilder.group({
             'userTypeId': new FormControl({value: '', disabled: true}),
-            'userTypeName': new FormControl('', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(100)]))
+            'userTypeName': new FormControl('', Validators.compose([Validators.required, Validators.maxLength(100)]))
         });
         
         this.cols = [
@@ -122,6 +123,7 @@ export class UserTypeComponent implements OnInit {
                         this.alertService.error(data.error);
                     } else {
                         this.userTypes.push(data.body);
+                        this.updateUserTypes();
                     }
                 },
                 error => {
@@ -139,6 +141,7 @@ export class UserTypeComponent implements OnInit {
                         this.alertService.error(data.error);
                     } else {                
                         this.userTypes[this.findSelectedUserTypeIndex()] = this.userType;
+                        this.updateUserTypes();
                     }
                     // Stop the loading widget
                     this.hideLoadingModal();
@@ -178,6 +181,7 @@ export class UserTypeComponent implements OnInit {
                     this.alertService.error(data.error);
                 } else {
                     this.userTypes.splice(this.findSelectedUserTypeIndex(), 1);
+                    this.updateUserTypes();
                 }
             },
             error => {
@@ -215,6 +219,13 @@ export class UserTypeComponent implements OnInit {
             userTypeToUpdate[prop] = userType[prop];
         }
         return userTypeToUpdate;
+    }
+    
+    /**
+     * Function used to update other forms data with the changes to user types
+     */
+    private updateUserTypes() {
+        this.updateData.emit(this.userTypes);
     }
     
     /**

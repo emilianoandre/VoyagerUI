@@ -16,23 +16,18 @@ export class AuthenticationService {
     // Constants
     private SERVICE_LOGIN = "Login/";
     private METHOD_LOGIN = "login"
+    private SERVICE_LOGOUT = "Login/";
+    private METHOD_LOGOUT = "logout"
     
     constructor(private http: Http) { }
  
     login(userName, password) {
         return this.http.post(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_LOGIN + this.METHOD_LOGIN, JSON.stringify({ userName: userName, password: password }), Utils.getHeaders())
-            .map((response: Response) => {
-                // login successful if there's a jwt token in the response
-                let user = response.json();
-                if (user && user.token) {
-                    // store user details and jwt token in local storage to keep user logged in between page refreshes
-                    localStorage.setItem('currentUser', JSON.stringify(user));
-                }
-            }).catch(Utils.handleServerErrors);
+            .map(Utils.handleServerResponse).catch(Utils.handleServerErrors);
     }
  
     logout() {
-        // remove user from local storage to log user out
-        localStorage.removeItem('currentUser');
+        return this.http.post(Constants.SERVER_URL + Constants.SERVER_APP_NAME + this.SERVICE_LOGIN + this.METHOD_LOGOUT, localStorage.getItem('currentUser'), Utils.getHeaders())
+        .map(Utils.handleServerResponse).catch(Utils.handleServerErrors);        
     }
 }

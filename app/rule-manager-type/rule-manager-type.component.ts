@@ -24,6 +24,8 @@ export class RuleManagerTypeComponent implements OnInit {
     
     //Events
     @Output('loadingModal') updateLoadingModal = new EventEmitter(); //Event handled by home.component to show and hide the loading widget
+    @Output('updateData') updateData = new EventEmitter(); //Event handled by home.component to update data in other tabs
+    
     displayDialog : boolean;
     ruleManagerType:Type = new Type();
     selectedRuleManagerType : Type;
@@ -43,7 +45,7 @@ export class RuleManagerTypeComponent implements OnInit {
         // Set up validations
         this.ruleManagerTypeForm = this.formBuilder.group({
             'ruleManagerTypeId': new FormControl({value: '', disabled: true}),
-            'ruleManagerTypeName': new FormControl('', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(100)]))
+            'ruleManagerTypeName': new FormControl('', Validators.compose([Validators.required, Validators.maxLength(100)]))
         });
         
         this.cols = [
@@ -121,6 +123,7 @@ export class RuleManagerTypeComponent implements OnInit {
                         this.alertService.error(data.error);
                     } else {
                         this.ruleManagerTypes.push(data.body);
+                        this.updateRuleManagerTypes();
                     }
                 },
                 error => {
@@ -138,6 +141,7 @@ export class RuleManagerTypeComponent implements OnInit {
                         this.alertService.error(data.error);
                     } else {                
                         this.ruleManagerTypes[this.findSelectedRuleManagerTypeIndex()] = this.ruleManagerType;
+                        this.updateRuleManagerTypes();
                     }
                     // Stop the loading widget
                     this.hideLoadingModal();
@@ -177,6 +181,7 @@ export class RuleManagerTypeComponent implements OnInit {
                     this.alertService.error(data.error);
                 } else {
                     this.ruleManagerTypes.splice(this.findSelectedRuleManagerTypeIndex(), 1);
+                    this.updateRuleManagerTypes();
                 }
             },
             error => {
@@ -214,6 +219,13 @@ export class RuleManagerTypeComponent implements OnInit {
             ruleManagerTypeToUpdate[prop] = ruleManagerType[prop];
         }
         return ruleManagerTypeToUpdate;
+    }
+    
+    /**
+     * Function used to update other forms data with the changes to rule manager types
+     */
+    private updateRuleManagerTypes() {
+        this.updateData.emit(this.ruleManagerTypes);
     }
     
     /**

@@ -34,7 +34,18 @@ export class LoginComponent implements OnInit {
         this.authenticationService.login(this.model.username, this.model.password)
             .subscribe(
                 data => {
-                    this.router.navigate(['/']);
+                    if (data.error) {
+                        this.alertService.error('Failed to log in. ' + data.error);
+                        this.loading = false;
+                    } else {
+                        // login successful if there's a jwt token in the response
+                        let token = data.body;
+                        if (token) {
+                            // store user details and jwt token in local storage to keep user logged in between page refreshes
+                            localStorage.setItem('currentUser', token);
+                        }
+                        this.router.navigate(['/']);
+                    }
                 },
                 error => {
                     this.alertService.error('Failed to log in. ' + error);
